@@ -26,7 +26,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 565M,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p4_i2_w640.jpeg",
-                        //Equipments = ""
+                        Equipments = ""
                     },
 
                     new Board
@@ -39,7 +39,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Funboard,
                         Price = 685M,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p10_i2_w640.jpeg",
-                        //Equipments = ""
+                        Equipments = ""
                     },
 
                     new Board
@@ -52,7 +52,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Funboard,
                         Price = 695M,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p20_i2_w640.jpeg",
-                        //Equipments = ""
+                        Equipments = ""
                     },
 
                     new Board
@@ -65,7 +65,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 645M,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p26_i2_w640.jpeg",
-                        //Equipments = ""
+                        Equipments = ""
                     },
 
                     new Board
@@ -78,7 +78,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Longboard,
                         Price = 895M,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p3_i2_w640.jpeg",
-                        //Equipments = ""
+                        Equipments = ""
                     },
 
                     new Board
@@ -91,7 +91,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 645M,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p5_i4_w640.jpeg",
-                        //Equipments = ""
+                        Equipments = ""
                     },
 
                     new Board
@@ -129,7 +129,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Funboard,
                         Price = 611,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p31_i2_w640.jpeg",
-                        //Equipments = "Fin,Paddle,Pump,Leash"
+                        Equipments = "Fin,Paddle,Pump,Leash"
                     },
 
                     new Board
@@ -142,34 +142,12 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 1304,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p26_i2_w640.jpeg",
-                        //Equipments = "Fin,Paddle,Pump,Leash"
+                        Equipments = "Fin,Paddle,Pump,Leash"
                     }
                 );
                 context.SaveChanges();
 
-                if (context.Equipment.Any())
-                {
-                    return;   // DB has been seeded
-                }
-                context.Equipment.AddRange(
-                    new Equipment
-                    {
-                        Name = "Paddle"
-                    },
-                    new Equipment
-                    {
-                        Name = "Fin"
-                    },
-                    new Equipment
-                    {
-                        Name = "Pump"
-                    },
-                    new Equipment
-                    {
-                        Name = "Leash"
-                    }
-                );
-                context.SaveChanges();
+                
             }
         }
     }

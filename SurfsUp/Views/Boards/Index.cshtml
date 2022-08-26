@@ -36,24 +36,14 @@
                         <b>Equipments: </b>
                         <pro style="float:right;">
                             <div style="text-align:right;">
-                                @if (item.Equipments != null)
-                                {
-                                    @foreach (var items in item.Equipments)
-                                    {
-                                        <p style="padding:0;margin:0;">@items.Name</p>
-                                    }
-                                }
-                                else {
-                                    <p style="padding:0;margin:0;">None</p>
-                                }
-                                @*@if (!String.IsNullOrEmpty(item.Equipments))
+                                @if (!String.IsNullOrEmpty(item.Equipments))
                                     @foreach (var items in item.Equipments.Split(','))
                                     {
                                         <p style="padding:0;margin:0;">@items</p>
                                     }
                                 else {
                                     <p style="padding:0;margin:0;">None</p>
-                                }*@
+                                }
                             </div>
                         </pro>
                     </li>

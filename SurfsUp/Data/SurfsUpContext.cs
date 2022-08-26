@@ -17,17 +17,6 @@ namespace SurfsUp.Data
         {
         }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder
-        //        .Entity<Board>()
-        //        .HasMany(p => p.Equipments)
-        //        .WithMany(p => p.Boards)
-        //        .UsingEntity(j => j.ToTable("BoardEquipment"));
-        //}
-
         public DbSet<SurfsUp.Models.Board> Board { get; set; } = default!;
-
-        public DbSet<SurfsUp.Models.Equipment> Equipment { get; set; }
     }
 }

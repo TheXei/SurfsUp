@@ -60,21 +60,6 @@ namespace SurfsUp.Controllers
         // GET: Boards/Create
         public IActionResult Create()
         {
-            List<SelectListItem> equipments = new List<SelectListItem>();
-
-            var equipmentslist = _context.Equipment.ToList();
-
-            foreach (var item in equipmentslist)
-            {
-                equipments.Add(new SelectListItem()
-                {
-                    Text = item.Name,
-                    Value = item.Id.ToString()
-                });
-            }
-
-            ViewBag.equipments = equipments;
-
             return View();
         }
 
@@ -97,20 +82,6 @@ namespace SurfsUp.Controllers
         // GET: Boards/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            List<SelectListItem> equipments = new List<SelectListItem>();
-
-            var equipmentslist = _context.Equipment.ToList();
-
-            foreach (var item in equipmentslist)
-            {
-                equipments.Add(new SelectListItem()
-                {
-                    Text = item.Name,
-                    Value = item.Id.ToString()
-                });
-            }
-
-            ViewBag.equipments = equipments;
 
             if (id == null || _context.Board == null)
             {

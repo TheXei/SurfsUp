@@ -32,9 +32,9 @@ namespace SurfsUp.Models
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
-        //public string Equipments { get; set; }
+        public string Equipments { get; set; }
         public string ImageURL { get; set; }
 
-        public ICollection<Equipment> Equipments { get; set; }
+        //public ICollection<Equipment> Equipments { get; set; }
     }
 }
