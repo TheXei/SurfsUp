@@ -27,9 +27,9 @@ namespace SurfsUp.Models
         [StringLength(60, MinimumLength = 3)]
         [Required]
         public string Name { get; set; }
-        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
-        //public string Description { get; set; }
 
+        //public string Description { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         [Range(1, 100)]
         [Required]
         public float Length { get; set; }
@@ -43,8 +43,8 @@ namespace SurfsUp.Models
         [Required]
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public float Thickness { get; set; }
-        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
 
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         [Range(1, 1000)]
         [Required]
         public float Volume { get; set; }
@@ -54,7 +54,9 @@ namespace SurfsUp.Models
 
         //[Column(TypeName = "decimal(18, 2)")]
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
+        [Required]
         public float Price { get; set; }
+
         public string Equipments { get; set; }
 
         [Required]
