@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+    "globalize": "1.7.0",
+    "cldr": "7.2.0",
+    "cldrjs": "0.5.5"
+  }
+}
