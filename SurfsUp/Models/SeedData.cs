@@ -24,7 +24,7 @@ namespace SurfsUp.Models
                         Thickness = 2.75f,
                         Volume = 38.80f,
                         Type = BoardType.Shortboard,
-                        Price = 565M,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p4_i2_w640.jpeg",
                         Equipments = ""
                     },
@@ -37,7 +37,7 @@ namespace SurfsUp.Models
                         Thickness = 2.75f,
                         Volume = 44.16f,
                         Type = BoardType.Funboard,
-                        Price = 685M,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p10_i2_w640.jpeg",
                         Equipments = ""
                     },
@@ -50,7 +50,7 @@ namespace SurfsUp.Models
                         Thickness = 2.9f,
                         Volume = 42.22f,
                         Type = BoardType.Funboard,
-                        Price = 695M,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p20_i2_w640.jpeg",
                         Equipments = ""
                     },
@@ -63,7 +63,7 @@ namespace SurfsUp.Models
                         Thickness = 2.3f,
                         Volume = 29.39f,
                         Type = BoardType.Shortboard,
-                        Price = 645M,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p26_i2_w640.jpeg",
                         Equipments = ""
                     },
@@ -76,7 +76,7 @@ namespace SurfsUp.Models
                         Thickness = 2.8f,
                         Volume = 65.4f,
                         Type = BoardType.Longboard,
-                        Price = 895M,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p3_i2_w640.jpeg",
                         Equipments = ""
                     },
@@ -89,7 +89,7 @@ namespace SurfsUp.Models
                         Thickness = 2.5f,
                         Volume = 33.7f,
                         Type = BoardType.Shortboard,
-                        Price = 645M,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p5_i4_w640.jpeg",
                         Equipments = ""
                     },
@@ -102,7 +102,7 @@ namespace SurfsUp.Models
                         Thickness = 3f,
                         Volume = 80f,
                         Type = BoardType.Funboard,
-                        Price = 1025M,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p6_i6_w640.jpeg"
                     },
 
@@ -114,7 +114,7 @@ namespace SurfsUp.Models
                         Thickness = 6,
                         Volume = 301,
                         Type = BoardType.Funboard,
-                        Price = 854,
+                        Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p24_i2_w640.jpeg",
                        // Equipments = "Paddle"
                     },

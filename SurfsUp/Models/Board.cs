@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
@@ -26,11 +27,13 @@ namespace SurfsUp.Models
         [StringLength(60, MinimumLength = 3)]
         [Required]
         public string Name { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         //public string Description { get; set; }
 
         [Range(1, 100)]
         [Required]
         public float Length { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
 
         [Range(1, 100)]
         [Required]
@@ -38,7 +41,9 @@ namespace SurfsUp.Models
 
         [Range(1, 100)]
         [Required]
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public float Thickness { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
 
         [Range(1, 1000)]
         [Required]
@@ -47,12 +52,9 @@ namespace SurfsUp.Models
         [Required]
         public BoardType Type { get; set; }
 
-        [Range(1, 10000)]
-        [Column(TypeName = "decimal(18, 2)")]
-        [Required]
-        public decimal Price { get; set; }
-
-
+        //[Column(TypeName = "decimal(18, 2)")]
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
+        public float Price { get; set; }
         public string Equipments { get; set; }
 
         [Required]
