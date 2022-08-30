@@ -1,7 +1,11 @@
+using LazZiya.TagHelpers;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfsUp.Data;
 using SurfsUp.Models;
+using System.Globalization;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfsUpContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpContext") ?? throw new InvalidOperationException("Connection string 'SurfsUpContext' not found.")));
@@ -9,6 +13,14 @@ builder.Services.AddDbContext<SurfsUpContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient<ITagHelperComponent, LocalizationValidationScriptsTagHelperComponent>();
+
+var cultureInfo = new CultureInfo("da-DK");
+cultureInfo.NumberFormat.CurrencyDecimalSeparator = ",";
+
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
