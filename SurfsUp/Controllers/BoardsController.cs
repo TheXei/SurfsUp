@@ -26,7 +26,8 @@ namespace SurfsUp.Controllers
         public async Task<IActionResult> Index(string sortOrder,
                                                 string currentFilter,
                                                 string search,
-                                                int? pageNumber)
+                                                int? pageNumber,
+                                                string type)
         {
             ViewData["CurrentSort"] = sortOrder;
 
