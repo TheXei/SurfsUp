@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,19 +23,47 @@ namespace SurfsUp.Controllers
         
 
         // GET: Boards
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, string type)
         {
-
-
             var boards = from m in _context.Board
                             select m;
-
-            if (!String.IsNullOrEmpty(search))
+            
+            if (!String.IsNullOrEmpty(search) && !String.IsNullOrEmpty(type))
             {
-                boards = boards.Where(s => s.Name!.Contains(search));
+                //boards = boards.AsEnumerable().Where(s => s.GetType().GetProperty(type).GetValue(s).ToString().ToLower().Contains(search.ToLower()));
+
+                //var task = boards.where(b => b.GetType().GetProperty(type).GetValue(b, null));
+
+                switch (type.ToLower())
+                {
+                    case "name":
+                        boards = boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower()));
+                        break;
+                    case "length":
+                        boards = boards.Where(s => s.Length.ToString().ToLower()!.Contains(search.ToLower()));
+                        break;
+                    case "thickness":
+                        boards = boards.Where(s => s.Thickness.ToString().ToLower()!.Contains(search.ToLower()));
+                        break;
+                    case "volume":
+                        boards = boards.Where(s => s.Volume.ToString().ToLower()!.Contains(search.ToLower()));
+                        break;
+                    case "type":
+                        boards = boards.Where(s => s.Type.ToString().ToLower()!.Contains(search.ToLower()));
+                        break;
+                    case "price":
+                        boards = boards.Where(s => s.Price.ToString().ToLower()!.Contains(search.ToLower()));
+                        break;
+                    case "equipments":
+                        boards = boards.Where(s => s.Equipments.ToLower()!.Contains(search.ToLower()));
+                        break;
+                    default:
+                        boards = boards.Where(s => s.Name!.Contains(search.ToLower()));
+                        break;
+                }
             }
 
-            
+
 
             return View(await boards.ToListAsync());
         }
