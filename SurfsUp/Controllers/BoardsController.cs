@@ -23,8 +23,22 @@ namespace SurfsUp.Controllers
         
 
         // GET: Boards
-        public async Task<IActionResult> Index(string search, string type)
+        public async Task<IActionResult> Index(string sortOrder,
+                                                string currentFilter,
+                                                string search,
+                                                int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
+
+            if (search != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                search = currentFilter;
+            }
+
             var boards = from m in _context.Board
                             select m;
 
@@ -47,9 +61,8 @@ namespace SurfsUp.Controllers
                 };
             }
 
-
-
-            return View(await boards.ToListAsync());
+            int pageSize = 4;
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Boards/Details/5

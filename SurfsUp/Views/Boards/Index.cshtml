@@ -1,5 +1,4 @@
-﻿@using System.Reflection
-@model IEnumerable<SurfsUp.Models.Board>
+﻿@model PaginatedList<SurfsUp.Models.Board>
 
 @{
     ViewData["Title"] = "Board Manager";
@@ -81,6 +80,25 @@
         </div>
     }
 </div>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
 @*<table class="table">
     <thead>
         <tr>
