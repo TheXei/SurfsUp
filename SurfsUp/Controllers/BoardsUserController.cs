@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace SurfsUp.Controllers
 {
@@ -19,10 +20,21 @@ namespace SurfsUp.Controllers
             _context = context;
         }
 
-        // GET: BoardsUser
-        public async Task<IActionResult> Index()
+        // GET: Boards
+        public async Task<IActionResult> Index(string search, object type)
         {
-              return View(await _context.Board.ToListAsync());
+
+
+            var boards = from m in _context.Board
+                         select m;
+
+            if (!String.IsNullOrEmpty(search))
+            {
+            }
+
+
+
+            return View(await boards.ToListAsync());
         }
 
         // GET: BoardsUser/Details/5
