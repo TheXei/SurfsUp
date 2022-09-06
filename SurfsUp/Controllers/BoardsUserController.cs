@@ -22,7 +22,16 @@ namespace SurfsUp.Controllers
         // GET: BoardsUser
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Board.ToListAsync());
+            var boards = from m in _context.Board
+                         select m;
+
+            await boards.Where(board => board.Rent != null && board.Rent.EndRent < DateTime.Now).ForEachAsync(board => board.Rent = null); {
+                await _context.SaveChangesAsync();
+            }
+
+            boards = boards.Where(board => board.Rent == null);
+
+            return View(await _context.Board.ToListAsync());
         }
 
         // GET: BoardsUser/Details/5
@@ -41,6 +50,40 @@ namespace SurfsUp.Controllers
             }
 
             return View(board);
+        }
+
+        public async Task<IActionResult> Rentout(int id, [Bind("StartRent,EndRent")] Rent rent)
+        {
+            if (!BoardExists(id))
+            {
+                return NotFound();
+            }
+
+            rent.BoardId = id;
+            rent.EndRent = rent.StartRent.AddDays(7);   
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Add(rent);
+                    await _context.SaveChangesAsync();
+                    Board SelectedBoard = await _context.Board.FirstOrDefaultAsync(board => board.Id == id);
+                    SelectedBoard.Rent = rent;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BoardExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
         }
 
         private bool BoardExists(int id)
