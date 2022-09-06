@@ -11,6 +11,9 @@
     </p>
     <form asp-controller="Boards" asp-action="Index" method="get">
         <p style="margin:0;display:flex;">
+                <select class="me-2 form-control" name=""  asp-items="Html.GetEnumSelectList<BoardType>()"> 
+                    <option value="" selected>All board types</option>
+                </select>
             <input class="form-control" type="text" name="search" placeholder="Name" />
             <input class="btnSearch btn btn-dark" type="submit" value="Search" />
         </p>

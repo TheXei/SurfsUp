@@ -22,7 +22,7 @@ namespace SurfsUp.Controllers
         
 
         // GET: Boards
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, string type)
         {
 
 
