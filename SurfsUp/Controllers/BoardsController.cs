@@ -27,40 +27,24 @@ namespace SurfsUp.Controllers
         {
             var boards = from m in _context.Board
                             select m;
-            
+
             if (!String.IsNullOrEmpty(search) && !String.IsNullOrEmpty(type))
             {
                 //boards = boards.AsEnumerable().Where(s => s.GetType().GetProperty(type).GetValue(s).ToString().ToLower().Contains(search.ToLower()));
 
                 //var task = boards.where(b => b.GetType().GetProperty(type).GetValue(b, null));
 
-                switch (type.ToLower())
+                boards = type.ToLower() switch
                 {
-                    case "name":
-                        boards = boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower()));
-                        break;
-                    case "length":
-                        boards = boards.Where(s => s.Length.ToString().ToLower()!.Contains(search.ToLower()));
-                        break;
-                    case "thickness":
-                        boards = boards.Where(s => s.Thickness.ToString().ToLower()!.Contains(search.ToLower()));
-                        break;
-                    case "volume":
-                        boards = boards.Where(s => s.Volume.ToString().ToLower()!.Contains(search.ToLower()));
-                        break;
-                    case "type":
-                        boards = boards.Where(s => s.Type.ToString().ToLower()!.Contains(search.ToLower()));
-                        break;
-                    case "price":
-                        boards = boards.Where(s => s.Price.ToString().ToLower()!.Contains(search.ToLower()));
-                        break;
-                    case "equipments":
-                        boards = boards.Where(s => s.Equipments.ToLower()!.Contains(search.ToLower()));
-                        break;
-                    default:
-                        boards = boards.Where(s => s.Name!.Contains(search.ToLower()));
-                        break;
-                }
+                    "name" => boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower())),
+                    "lenth" => boards.Where(s => s.Length.ToString().ToLower()!.Contains(search.ToLower())),
+                    "thickness" => boards.Where(s => s.Thickness.ToString().ToLower()!.Contains(search.ToLower())),
+                    "volume" => boards.Where(s => s.Volume.ToString().ToLower()!.Contains(search.ToLower())),
+                    "type" => boards.Where(s => s.Type.ToString().ToLower()!.Contains(search.ToLower())),
+                    "price" => boards.Where(s => s.Price.ToString().ToLower()!.Contains(search.ToLower())),
+                    "equipments" => boards.Where(s => s.Equipments.ToLower()!.Contains(search.ToLower())),
+                    _ => boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower())),
+                };
             }
 
 
