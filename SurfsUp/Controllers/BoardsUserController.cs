@@ -21,20 +21,56 @@ namespace SurfsUp.Controllers
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index(string search, object type)
+        public async Task<IActionResult> Index(string sortOrder,
+                                                string currentFilter,
+                                                string search,
+                                                int? pageNumber,
+                                                string type)
         {
+            ViewData["CurrentSort"] = sortOrder;
 
+            if (search != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                search = currentFilter;
+            }
 
             var boards = from m in _context.Board
                          select m;
 
-            if (!String.IsNullOrEmpty(search))
+            boards = boards.Include(r => r.Rent);
+
+            await boards.Where(board => board.Rent != null && board.Rent.EndRent < DateTime.Now).ForEachAsync(board => board.Rent = null);
             {
+                await _context.SaveChangesAsync();
             }
 
+            boards = boards.Where(board => board.Rent == null);
 
+            if (!String.IsNullOrEmpty(search) && !String.IsNullOrEmpty(type))
+            {
+                //boards = boards.AsEnumerable().Where(s => s.GetType().GetProperty(type).GetValue(s).ToString().ToLower().Contains(search.ToLower()));
 
-            return View(await boards.ToListAsync());
+                //var task = boards.where(b => b.GetType().GetProperty(type).GetValue(b, null));
+
+                boards = type.ToLower() switch
+                {
+                    "name" => boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower())),
+                    "lenth" => boards.Where(s => s.Length.ToString().ToLower()!.Contains(search.ToLower())),
+                    "thickness" => boards.Where(s => s.Thickness.ToString().ToLower()!.Contains(search.ToLower())),
+                    "volume" => boards.Where(s => s.Volume.ToString().ToLower()!.Contains(search.ToLower())),
+                    "type" => boards.Where(s => s.Type.ToString().ToLower()!.Contains(search.ToLower())),
+                    "price" => boards.Where(s => s.Price.ToString().ToLower()!.Contains(search.ToLower())),
+                    "equipments" => boards.Where(s => s.Equipments.ToLower()!.Contains(search.ToLower())),
+                    _ => boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower())),
+                };
+            }
+
+            int pageSize = 4;
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: BoardsUser/Details/5
@@ -53,6 +89,40 @@ namespace SurfsUp.Controllers
             }
 
             return View(board);
+        }
+
+        public async Task<IActionResult> Rentout(int id, [Bind("StartRent,EndRent")] Rent rent)
+        {
+            if (!BoardExists(id))
+            {
+                return NotFound();
+            }
+
+            rent.BoardId = id;
+            rent.EndRent = rent.StartRent.AddDays(7);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Add(rent);
+                    await _context.SaveChangesAsync();
+                    Board SelectedBoard = await _context.Board.FirstOrDefaultAsync(board => board.Id == id);
+                    SelectedBoard.Rent = rent;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BoardExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
         }
 
         private bool BoardExists(int id)

@@ -1,4 +1,6 @@
-﻿namespace SurfsUp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SurfsUp.Models
 {
     public class Rent
     {

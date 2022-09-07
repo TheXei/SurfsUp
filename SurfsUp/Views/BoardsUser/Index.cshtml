@@ -1,15 +1,104 @@
-﻿@model IEnumerable<SurfsUp.Models.Board>
+﻿@using System.Reflection
+@model PaginatedList<SurfsUp.Models.Board>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Board Manager";
 }
 
-<h1>Index</h1>
+<h1>Board Manager</h1>
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <p style="margin:0;">
+        <a asp-action="Create" class="nav-link text-light bg-dark" style="border-radius:5px; width: 150px;">Add New Board</a>
+    </p>
+    <form asp-controller="Boards" asp-action="Index" method="get">
+        <p style="margin:0;display:flex;">
+            <select class="me-2 form-control" name="type">
+                <option value="">All Types</option>
+                @if (Model.Count() != 0)
+                    @foreach (PropertyInfo propertyInfo in Model.ElementAt(0).GetType().GetProperties())
+                    {
+                        if (!propertyInfo.Name.ToLower().Contains("id".ToLower()) && !propertyInfo.Name.ToLower().Contains("imageurl".ToLower()))
+                        {
+                            <option value="@propertyInfo.Name.ToString()">@propertyInfo.Name</option>
+                        }
+                    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+            </select>
+            <input class="form-control" type="text" name="search" placeholder="Search Text" />
+            <input class="btnSearch btn btn-dark" type="submit" value="Search" />
+        </p>
+    </form>
+</div>
+
+<div class="row" style="display:flex;flex-wrap:wrap; padding:0!important;">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+            <div class="card" style="margin-top:15px;">
+                <div class="card-header">
+                    <h5 class="card-title" style="margin:0!important;"><b>@item.Name</b></h5>
+                </div>
+                <img style="height: 275px; margin:20px auto 20px auto;" class="card-img-top img-fluid" src="@item.ImageURL" alt="">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Length:</b> <pro style="float:right;">@item.Length feet</pro></li>
+                    <li class="list-group-item"><b>Width:</b> <pro style="float:right;">@item.Width inches</pro></li>
+                    <li class="list-group-item"><b>Thickness:</b> <pro style="float:right;">@item.Thickness inches</pro></li>
+                    <li class="list-group-item"><b>Volume:</b> <pro style="float:right;">@item.Volume L</pro></li>
+                    <li class="list-group-item"><b>Type:</b> <pro style="float:right;">@item.Type</pro></li>
+                    <li class="list-group-item">
+                        <b>Equipments: </b>
+                        <pro style="float:right;">
+                            <div style="text-align:right;">
+                                @if (!String.IsNullOrEmpty(item.Equipments))
+                                    @foreach (var items in item.Equipments.Split(','))
+                                    {
+                                        <p style="padding:0;margin:0;">@items</p>
+                                    }
+                                else
+                                {
+                                    <p style="padding:0;margin:0;">None</p>
+                                }
+                            </div>
+                        </pro>
+                    </li>
+                    <li class="list-group-item"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
+
+                </ul>
+                <div class="card-body">
+                    <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
+                        <li class="nav-item">
+                            <a asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Details</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -36,48 +125,44 @@
             <th>
                 @Html.DisplayNameFor(model => model.Equipments)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageURL)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Length)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Width)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Thickness)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Volume)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Equipments)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageURL)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Length)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Width)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Thickness)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Volume)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Equipments)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+*@
