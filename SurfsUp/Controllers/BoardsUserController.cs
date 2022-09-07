@@ -91,7 +91,21 @@ namespace SurfsUp.Controllers
             return View(board);
         }
 
-        public async Task<IActionResult> Rentout(int id, [Bind("StartRent,EndRent")] Rent rent)
+        public async Task<IActionResult> RentOut(int? id)
+        {
+
+            if (id == null || _context.Board == null)
+            {
+                return NotFound();
+            }
+
+            var rent = new Rent();
+            return View(rent);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RentOut(int id, [Bind(include: "StartRent,EndRent")] Rent rent)
         {
             if (!BoardExists(id))
             {
@@ -99,30 +113,20 @@ namespace SurfsUp.Controllers
             }
 
             rent.BoardId = id;
-            rent.EndRent = rent.StartRent.AddDays(7);
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Add(rent);
                     await _context.SaveChangesAsync();
-                    Board SelectedBoard = await _context.Board.FirstOrDefaultAsync(board => board.Id == id);
-                    SelectedBoard.Rent = rent;
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!BoardExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            return View(rent);
         }
 
         private bool BoardExists(int id)

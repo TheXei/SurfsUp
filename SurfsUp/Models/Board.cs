@@ -62,7 +62,7 @@ namespace SurfsUp.Models
         [Required]
         public string ImageURL { get; set; }
 
-        public Rent? Rent { get; set; }
+        public virtual Rent? Rent { get; set; }
 
         //public ICollection<Equipment> Equipments { get; set; }
     }
