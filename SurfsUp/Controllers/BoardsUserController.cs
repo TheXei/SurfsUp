@@ -59,7 +59,7 @@ namespace SurfsUp.Controllers
                 boards = type.ToLower() switch
                 {
                     "name" => boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower())),
-                    "lenth" => boards.Where(s => s.Length.ToString().ToLower()!.Contains(search.ToLower())),
+                    "length" => boards.Where(s => s.Length.ToString().ToLower()!.Contains(search.ToLower())),
                     "thickness" => boards.Where(s => s.Thickness.ToString().ToLower()!.Contains(search.ToLower())),
                     "volume" => boards.Where(s => s.Volume.ToString().ToLower()!.Contains(search.ToLower())),
                     "type" => boards.Where(s => s.Type.ToString().ToLower()!.Contains(search.ToLower())),
