@@ -113,7 +113,7 @@ namespace SurfsUp.Controllers
             }
 
             rent.BoardId = id;
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && rent.StartRent < rent.EndRent)
             {
                 try
                 {
