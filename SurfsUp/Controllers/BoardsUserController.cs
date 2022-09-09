@@ -113,18 +113,25 @@ namespace SurfsUp.Controllers
             }
 
             rent.BoardId = id;
-            if (ModelState.IsValid && rent.StartRent < rent.EndRent)
+            if (rent.StartRent > rent.EndRent)
             {
-                try
+                ModelState.AddModelError("StartRent", "Start date must be before end date");
+            }
+            else
+            {
+                if (ModelState.IsValid)
                 {
-                    _context.Add(rent);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Add(rent);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-                return RedirectToAction(nameof(Index));
             }
             return View(rent);
         }
