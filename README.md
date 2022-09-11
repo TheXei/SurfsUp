@@ -4,6 +4,5 @@ Gruppen består af Kinga, Mikkel, Isabella, Mathias, Frederik, Kai og Marcus
 ## Installation
 Tools > NuGet Package Manager > Package Manager Console
 ```powershell
-Update-Database -Context SurfsUpContext
-Update-Database -Context SurfsUpIdentityContext
+.\build.ps1
 ```
