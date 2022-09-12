@@ -154,6 +154,12 @@ namespace SurfsUp.Models
             }
             
         }
+        /// <summary>
+        /// It creates a user with the email "admin@surfsup.dk" and the password "secret" and assigns
+        /// the role "Admin" to the user
+        /// </summary>
+        /// <param name="IServiceProvider">This is the service provider that is used to create the
+        /// database context.</param>
         public static async Task InitializeUser(IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetService<SurfsUpIdentityContext>();
@@ -207,6 +213,17 @@ namespace SurfsUp.Models
                 await context.SaveChangesAsync();
 
         }
+        /// <summary>
+        /// This function takes in a user's email address and a role name, finds the user in the
+        /// database, and assigns the role to the user
+        /// </summary>
+        /// <param name="IServiceProvider">This is the service provider that is used to get the
+        /// UserManager<IdentityUser></param>
+        /// <param name="id">The email address of the user</param>
+        /// <param name="role">The role you want to assign to the user.</param>
+        /// <returns>
+        /// The result of the operation.
+        /// </returns>
         public static async Task<IdentityResult> AssignRoles(IServiceProvider services, string id, string role)
         {
             UserManager<IdentityUser> _userManager = services.GetService<UserManager<IdentityUser>>();

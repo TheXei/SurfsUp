@@ -15,6 +15,7 @@ builder.Services.AddDbContext<SurfsUpContext>(options =>
 builder.Services.AddDbContext<SurfsUpIdentityContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpIdentityContextConnection") ?? throw new InvalidOperationException("Connection string 'SurfsUpIdentityContext' not found.")));
 
+/* Adding the Identity framework to the project. */
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddDefaultTokenProviders()
     .AddEntityFrameworkStores<SurfsUpIdentityContext>();
 
@@ -22,6 +23,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<ITagHelperComponent, LocalizationValidationScriptsTagHelperComponent>();
+/* Adding the `IEmailSender` interface to the project. */
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages();
 var cultureInfo = new CultureInfo("da-DK");

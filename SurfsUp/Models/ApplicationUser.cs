@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SurfsUp.Models
 {
+    /* It creates a class that inherits from IdentityUser. */
     public class ApplicationUser : IdentityUser
     {
         [Required]

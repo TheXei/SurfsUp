@@ -105,6 +105,8 @@ namespace SurfsUp.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
+
+            //Additional properties
             [Required]
             public string Name { get; set; }
             public string StreetAddress { get; set; }
@@ -113,6 +115,8 @@ namespace SurfsUp.Areas.Identity.Pages.Account
             public string PostalCode { get; set; }
             public string PhoneNumber { get; set; }
 
+
+            //Role added for testing on register page
             public string Role { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
@@ -121,6 +125,7 @@ namespace SurfsUp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            //Creating Roles
             if (!_roleManager.RoleExistsAsync(StaticDetails.Role_User_Admin).GetAwaiter().GetResult())
             {
                 _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_User_Admin)).GetAwaiter().GetResult();
@@ -129,6 +134,7 @@ namespace SurfsUp.Areas.Identity.Pages.Account
             }
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //Filling the RoleList
             Input = new InputModel()
             {
                 RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
@@ -149,6 +155,8 @@ namespace SurfsUp.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                /* This is adding the additional properties to the user. */
                 user.StreetAddress = Input.StreetAddress;
                 user.City = Input.City;
                 user.State = Input.State;
@@ -161,6 +169,8 @@ namespace SurfsUp.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    /* This is checking if the user has selected a role. If they have not selected a
+                    role, then they are assigned the default role. */
                     if (Input.Role == null)
                     {
                         await _userManager.AddToRoleAsync(user, StaticDetails.Role_User_Individual);
