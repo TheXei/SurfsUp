@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using SurfsUp.Models;
 
 namespace SurfsUp.Controllers
 {
+    [Authorize(Roles = StaticDetails.Role_User_Admin)]
     public class BoardsController : Controller
     {
         private readonly SurfsUpContext _context;
