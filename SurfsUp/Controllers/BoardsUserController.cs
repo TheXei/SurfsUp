@@ -60,8 +60,8 @@ namespace SurfsUp.Controllers
 
             boards = boards.Where(board => board.Rent == null);
 
-            int pageSize = 4;
 
+            /* Filtering the boards by the search string and then sorting them by the type. */
             if (!String.IsNullOrEmpty(search))
                 boards = from b in boards where b.Name.ToLower()!.Contains(search.ToLower()) select b;
 
@@ -83,7 +83,7 @@ namespace SurfsUp.Controllers
                 };
             }
 
-            
+            int pageSize = 4;
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
