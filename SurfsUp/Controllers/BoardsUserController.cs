@@ -143,13 +143,9 @@ namespace SurfsUp.Controllers
                 var currentUser = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
                 
                 if (!_context.Rent.Any(r => r.ApplicationUserId == currentUser.Id))
-                {
                     rent.ApplicationUser = currentUser;
-                    rent.ApplicationUserId = currentUser.Id;
-                }
-                else {
-                    rent.ApplicationUserId = currentUser.Id;
-                }
+                
+                rent.ApplicationUserId = currentUser.Id;
             }
             
             if (rent.StartRent > rent.EndRent)

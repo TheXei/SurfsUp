@@ -7,8 +7,14 @@
 
 <h3>@ViewData["Title"]</h3>
 
-<div class="row">
-    <div class="col-md-6">
+<div class="row mt-5">
+    <div class="col-md-2">
+        <nav class="nav nav-pills flex-column">
+            <a class="nav-link" aria-current="page" asp-page="./index">Profile</a>
+            <a class="nav-link active" asp-page="./PersonalData">Personal Data</a>
+        </nav>
+    </div>
+    <div class="col-md-10">
         <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
         <p>
             <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
