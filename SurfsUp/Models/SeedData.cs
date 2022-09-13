@@ -172,7 +172,9 @@ namespace SurfsUp.Models
 
                 if (!context.Roles.Any(r => r.Name == role))
                 {
-                    await roleStore.CreateAsync(new IdentityRole(role));
+                    var newRole = new IdentityRole(role);
+                    newRole.NormalizedName = role.ToUpper();
+                    await roleStore.CreateAsync(newRole);
                 }
             }
 
