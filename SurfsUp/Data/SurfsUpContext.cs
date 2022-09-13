@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using SurfsUp.Controllers;
-using SurfsUp.Migrations;
+//using SurfsUp.Migrations;
 using SurfsUp.Models;
 
 namespace SurfsUp.Data
