@@ -117,9 +117,9 @@ namespace SurfsUp.Areas.Identity.Pages.Account
 
 
             //Role added for testing on register page
-            public string Role { get; set; }
-            [ValidateNever]
-            public IEnumerable<SelectListItem> RoleList { get; set; }
+            //public string Role { get; set; }
+            //[ValidateNever]
+            //public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
 
@@ -135,14 +135,14 @@ namespace SurfsUp.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             //Filling the RoleList
-            Input = new InputModel()
-            {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
-                {
-                    Text = i,
-                    Value = i
-                })
-            };
+            //Input = new InputModel()
+            //{
+            //    RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+            //    {
+            //        Text = i,
+            //        Value = i
+            //    })
+            //};
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -171,15 +171,15 @@ namespace SurfsUp.Areas.Identity.Pages.Account
 
                     /* This is checking if the user has selected a role. If they have not selected a
                     role, then they are assigned the default role. */
-                    if (Input.Role == null)
-                    {
-                        await _userManager.AddToRoleAsync(user, StaticDetails.Role_User_Individual);
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, Input.Role);
-                    }
-                    
+                    //if (Input.Role == null)
+                    //{
+                    //    await _userManager.AddToRoleAsync(user, StaticDetails.Role_User_Individual);
+                    //}
+                    //else
+                    //{
+                    //    await _userManager.AddToRoleAsync(user, Input.Role);
+                    //}
+                    await _userManager.AddToRoleAsync(user, StaticDetails.Role_User_Individual);
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
