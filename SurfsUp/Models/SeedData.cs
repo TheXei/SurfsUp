@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
+using System.Data;
 
 namespace SurfsUp.Models
 {
@@ -149,6 +152,85 @@ namespace SurfsUp.Models
 
                 
             }
+            
+        }
+        /// <summary>
+        /// It creates a user with the email "admin@surfsup.dk" and the password "secret" and assigns
+        /// the role "Admin" to the user
+        /// </summary>
+        /// <param name="IServiceProvider">This is the service provider that is used to create the
+        /// database context.</param>
+        public static async Task InitializeUser(IServiceProvider serviceProvider)
+        {
+            var context = serviceProvider.GetService<SurfsUpIdentityContext>();
+
+            string[] roles = new string[] { StaticDetails.Role_User_Admin, StaticDetails.Role_User_Individual, StaticDetails.Role_User_Employee };
+
+            foreach (string role in roles)
+            {
+                var roleStore = new RoleStore<IdentityRole>(context);
+
+                if (!context.Roles.Any(r => r.Name == role))
+                {
+                    await roleStore.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            var user = new ApplicationUser
+            {
+                //Id = "e0fc40d6-5290-495d-b978-bc06b6e668f9",
+                UserName = "admin@surfsup.dk",
+                NormalizedUserName = "ADMIN@SURFSUP.DK",
+                Email = "admin@surfsup.dk",
+                NormalizedEmail = "ADMIN@SURFSUP.DK",
+                SecurityStamp = "YVS2T6AZ26RWAYSJ7FWQ6TT6FMZB736A",
+                ConcurrencyStamp = "1d7397fb-2eaf-42c4-a6b4-822f30237181",
+                PhoneNumber = "62731827",
+                PhoneNumberConfirmed = false,
+                LockoutEnabled = false,
+                AccessFailedCount = 0,
+                EmailConfirmed = true,
+                Name = "Admin",
+                StreetAddress = "Admin Street 21",
+                City = "Odense",
+                State = "Syddanmark",
+                PostalCode = "5000"
+            };
+            if (!context.ApplicationUsers.Any(u => u.UserName == user.UserName))
+            {
+                var password = new PasswordHasher<ApplicationUser>();
+                var hashed = password.HashPassword(user, "secret");
+                user.PasswordHash = hashed;
+
+                var userStore = new UserStore<ApplicationUser>(context);
+                var result = userStore.CreateAsync(user);
+
+            }
+
+            var assignResult = await AssignRoles(serviceProvider, user.Email, roles[0]);
+            
+            if (assignResult.Succeeded)
+                await context.SaveChangesAsync();
+
+        }
+        /// <summary>
+        /// This function takes in a user's email address and a role name, finds the user in the
+        /// database, and assigns the role to the user
+        /// </summary>
+        /// <param name="IServiceProvider">This is the service provider that is used to get the
+        /// UserManager<IdentityUser></param>
+        /// <param name="id">The email address of the user</param>
+        /// <param name="role">The role you want to assign to the user.</param>
+        /// <returns>
+        /// The result of the operation.
+        /// </returns>
+        public static async Task<IdentityResult> AssignRoles(IServiceProvider services, string id, string role)
+        {
+            UserManager<IdentityUser> _userManager = services.GetService<UserManager<IdentityUser>>();
+            IdentityUser user = await _userManager.FindByEmailAsync(id);
+            var result = await _userManager.AddToRoleAsync(user, role);
+
+            return result;
         }
     }
 }

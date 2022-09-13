@@ -10,7 +10,7 @@ public class SurfsUpIdentityContext : IdentityDbContext<IdentityUser>
         : base(options)
     {
     }
-
+    public DbSet<SurfsUp.Models.ApplicationUser> ApplicationUsers { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

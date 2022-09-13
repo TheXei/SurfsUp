@@ -11,16 +11,16 @@
     <form asp-controller="BoardsUser" asp-action="Index" method="get">
         <p style="margin:0;display:flex;">
             <select class="me-2 form-control" name="type">
-                <option value="">All Types</option>
-                @if (Model.Count() != 0)
-                    @foreach (PropertyInfo propertyInfo in Model.ElementAt(0).GetType().GetProperties())
+                <option disabled selected hidden value="">Sort by</option>
+                @foreach (PropertyInfo propertyInfo in typeof(Board).GetProperties())
+                {
+                    var propName = propertyInfo.Name.ToLower();
+                    List<string> Hide = new List<string>() { "id", "imageurl", "rent" };
+                    if (!Hide.Any(s => propName.Contains(s)))
                     {
-                        if (!propertyInfo.Name.ToLower().Contains("id".ToLower()) && !propertyInfo.Name.ToLower().Contains("imageurl".ToLower()))
-                        {
-                            <option value="@propertyInfo.Name.ToString()">@propertyInfo.Name</option>
-                        }
+                        <option value="@propertyInfo.Name">@propertyInfo.Name</option>
                     }
-
+                }
             </select>
             <input class="form-control" type="text" name="search" placeholder="Search Text" />
             <input class="btnSearch btn btn-dark" type="submit" value="Search" />

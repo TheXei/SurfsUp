@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +21,14 @@ namespace SurfsUp.Controllers
         {
             _context = context;
         }
+
+        //public Task SortAndSearch(IQueryable<Board> boardList, string type, string search)
+        //{
+        //    //IQueryable<Board> boards = boardList;
+            
+
+        //    return Task.CompletedTask;
+        //}
 
         // GET: Boards
         public async Task<IActionResult> Index(string sortOrder,
@@ -50,22 +60,26 @@ namespace SurfsUp.Controllers
 
             boards = boards.Where(board => board.Rent == null);
 
-            if (!String.IsNullOrEmpty(search) && !String.IsNullOrEmpty(type))
+
+            /* Filtering the boards by the search string and then sorting them by the type. */
+            if (!String.IsNullOrEmpty(search))
+                boards = from b in boards where b.Name.ToLower()!.Contains(search.ToLower()) select b;
+
+            if (!String.IsNullOrEmpty(type))
             {
-                //boards = boards.AsEnumerable().Where(s => s.GetType().GetProperty(type).GetValue(s).ToString().ToLower().Contains(search.ToLower()));
-
-                //var task = boards.where(b => b.GetType().GetProperty(type).GetValue(b, null));
-
+                //PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(Board)).Find("Length", true);
+                //var test2 = from b in _context.Board.ToList() orderby prop.GetValue(b) select b; //THIS WORKS
+                //ReturnedList = (from b in _context.Board.ToList() orderby prop.GetValue(b) select b).ToList(); ///Works too
                 boards = type.ToLower() switch
                 {
-                    "name" => boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower())),
-                    "length" => boards.Where(s => s.Length.ToString().ToLower()!.Contains(search.ToLower())),
-                    "thickness" => boards.Where(s => s.Thickness.ToString().ToLower()!.Contains(search.ToLower())),
-                    "volume" => boards.Where(s => s.Volume.ToString().ToLower()!.Contains(search.ToLower())),
-                    "type" => boards.Where(s => s.Type.ToString().ToLower()!.Contains(search.ToLower())),
-                    "price" => boards.Where(s => s.Price.ToString().ToLower()!.Contains(search.ToLower())),
-                    "equipments" => boards.Where(s => s.Equipments.ToLower()!.Contains(search.ToLower())),
-                    _ => boards.Where(s => s.Name.ToLower()!.Contains(search.ToLower())),
+                    "name" => from b in boards orderby b.Name select b,
+                    "length" => from b in boards orderby b.Length select b,
+                    "thickness" => from b in boards orderby b.Thickness select b,
+                    "volume" => from b in boards orderby b.Volume select b,
+                    "type" => from b in boards orderby b.Type select b,
+                    "price" => from b in boards orderby b.Price select b,
+                    "equipments" => from b in boards orderby b.Equipments select b,
+                    _ => from b in boards orderby b.Name select b,
                 };
             }
 
