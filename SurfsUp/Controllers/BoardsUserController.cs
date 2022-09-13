@@ -10,16 +10,21 @@ using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
 using static System.Reflection.Metadata.BlobBuilder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace SurfsUp.Controllers
 {
     public class BoardsUserController : Controller
     {
         private readonly SurfsUpContext _context;
+        private readonly SurfsUpIdentityContext _identityContext;
 
-        public BoardsUserController(SurfsUpContext context)
+        public BoardsUserController(SurfsUpContext context, SurfsUpIdentityContext identityContext)
         {
             _context = context;
+            _identityContext = identityContext;
         }
 
         //public Task SortAndSearch(IQueryable<Board> boardList, string type, string search)
@@ -105,6 +110,7 @@ namespace SurfsUp.Controllers
             return View(board);
         }
 
+        //GET MOETHOD
         public async Task<IActionResult> RentOut(int? id)
         {
 
@@ -112,11 +118,14 @@ namespace SurfsUp.Controllers
             {
                 return NotFound();
             }
-
+            
             var rent = new Rent();
+           
+            
             return View(rent);
         }
 
+        //POST METHOD
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RentOut(int id, [Bind(include: "StartRent,EndRent")] Rent rent)
@@ -127,6 +136,15 @@ namespace SurfsUp.Controllers
             }
 
             rent.BoardId = id;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var _userManager = new UserStore<ApplicationUser>(_identityContext);
+                var currentUser = _userManager.FindByNameAsync(User.Identity.Name.ToUpper()).GetAwaiter().GetResult();
+                rent.ApplicationUserId = currentUser.Id.ToString();
+                rent.ApplicationUser = currentUser;
+            }
+            
             if (rent.StartRent > rent.EndRent)
             {
                 ModelState.AddModelError("StartRent", "Start date must be before end date");
@@ -137,6 +155,7 @@ namespace SurfsUp.Controllers
                 {
                     try
                     {
+                        
                         _context.Add(rent);
                         await _context.SaveChangesAsync();
                     }
