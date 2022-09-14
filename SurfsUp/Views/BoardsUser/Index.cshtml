@@ -10,7 +10,7 @@
     <h1>Board Manager</h1>
     <form asp-controller="BoardsUser" asp-action="Index" method="get">
         <p style="margin:0;display:flex;">
-            <select class="me-2 form-control" name="type">
+            <select class="me-2 form-control" name="type" >
                 <option disabled selected hidden value="">Sort by</option>
                 @foreach (PropertyInfo propertyInfo in typeof(Board).GetProperties())
                 {
@@ -22,8 +22,8 @@
                     }
                 }
             </select>
-            <input class="form-control" type="text" name="search" placeholder="Search Text" />
-            <input class="btnSearch btn btn-dark" type="submit" value="Search" />
+            <input class="form-control" type="text" name="search" value="@ViewData["CurrentFilter"]"/>
+            <input class="btnSearch btn btn-dark" type="submit" value="Search"/>
         </p>
     </form>
 </div>
@@ -83,16 +83,16 @@
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-Type="@ViewData["Type"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-Type="@ViewData["Type"]"
    class="btn btn-default @nextDisabled">
     Next
 </a>

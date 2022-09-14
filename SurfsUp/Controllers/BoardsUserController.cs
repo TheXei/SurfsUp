@@ -31,14 +31,11 @@ namespace SurfsUp.Controllers
         //}
 
         // GET: Boards
-        public async Task<IActionResult> Index(string sortOrder,
-                                                string currentFilter,
+        public async Task<IActionResult> Index(string currentFilter,
                                                 string search,
                                                 int? pageNumber,
                                                 string type)
         {
-            ViewData["CurrentSort"] = sortOrder;
-
             if (search != null)
             {
                 pageNumber = 1;
@@ -47,6 +44,8 @@ namespace SurfsUp.Controllers
             {
                 search = currentFilter;
             }
+            ViewData["CurrentFilter"] = search;
+            ViewData["Type"] = type;
 
             var boards = from m in _context.Board
                          select m;
@@ -130,6 +129,14 @@ namespace SurfsUp.Controllers
             if (rent.StartRent > rent.EndRent)
             {
                 ModelState.AddModelError("StartRent", "Start date must be before end date");
+            }
+            if (rent.StartRent.AddMinutes(5) < DateTime.Now)
+            {
+                ModelState.AddModelError("StartRent", "Start date must not be sooner than now");
+            }
+            if (rent.EndRent > rent.StartRent.AddDays(30))
+            {
+                ModelState.AddModelError("StartRent", "You can only rent boards for 30 days maximum");
             }
             else
             {
