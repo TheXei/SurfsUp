@@ -148,28 +148,36 @@ namespace SurfsUp.Controllers
 
                 rent.ApplicationUserId = currentUser.Id;
             }
-            
+
+            if (rent.StartRent.AddMinutes(5) < DateTime.Now)
+            {
+                ModelState.AddModelError("StartRent", "Start date must not be sooner than now");
+            }
+            if (rent.EndRent > rent.StartRent.AddDays(30))
+            {
+                ModelState.AddModelError("StartRent", "You can only rent boards for 30 days maximum");
+            }
+
             if (rent.StartRent > rent.EndRent)
             {
                 ModelState.AddModelError("StartRent", "Start date must be before end date");
             }
-            else
+            
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    try
-                    {
                         
-                        _context.Add(rent);
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        throw;
-                    }
-                    return RedirectToAction(nameof(Index));
+                    _context.Add(rent);
+                    await _context.SaveChangesAsync();
                 }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
             }
+            
             return View(rent);
         }
 

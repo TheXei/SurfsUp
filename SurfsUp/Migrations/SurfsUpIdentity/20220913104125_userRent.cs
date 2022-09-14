@@ -5,11 +5,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SurfsUp.Migrations.SurfsUpIdentity
 {
-<<<<<<<< HEAD:SurfsUp/Migrations/SurfsUpIdentity/20220913092824_test.cs
-    public partial class test : Migration
-========
+
     public partial class userRent : Migration
->>>>>>>> krav3-user-rent:SurfsUp/Migrations/SurfsUpIdentity/20220913104125_userRent.cs
+
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -59,8 +57,6 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:SurfsUp/Migrations/SurfsUpIdentity/20220913092824_test.cs
-========
                 name: "Board",
                 columns: table => new
                 {
@@ -82,7 +78,6 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                 });
 
             migrationBuilder.CreateTable(
->>>>>>>> krav3-user-rent:SurfsUp/Migrations/SurfsUpIdentity/20220913104125_userRent.cs
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -187,9 +182,6 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-<<<<<<<< HEAD:SurfsUp/Migrations/SurfsUpIdentity/20220913092824_test.cs
-========
             migrationBuilder.CreateTable(
                 name: "Rent",
                 columns: table => new
@@ -215,7 +207,6 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                         onDelete: ReferentialAction.Cascade);
                 });
 
->>>>>>>> krav3-user-rent:SurfsUp/Migrations/SurfsUpIdentity/20220913104125_userRent.cs
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -254,14 +245,11 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-<<<<<<<< HEAD:SurfsUp/Migrations/SurfsUpIdentity/20220913092824_test.cs
-========
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rent_ApplicationUserId",
                 table: "Rent",
                 column: "ApplicationUserId");
->>>>>>>> krav3-user-rent:SurfsUp/Migrations/SurfsUpIdentity/20220913104125_userRent.cs
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -282,22 +270,16 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:SurfsUp/Migrations/SurfsUpIdentity/20220913092824_test.cs
-========
                 name: "Rent");
 
             migrationBuilder.DropTable(
->>>>>>>> krav3-user-rent:SurfsUp/Migrations/SurfsUpIdentity/20220913104125_userRent.cs
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-<<<<<<<< HEAD:SurfsUp/Migrations/SurfsUpIdentity/20220913092824_test.cs
-========
-
             migrationBuilder.DropTable(
                 name: "Board");
->>>>>>>> krav3-user-rent:SurfsUp/Migrations/SurfsUpIdentity/20220913104125_userRent.cs
+
         }
     }
 }
