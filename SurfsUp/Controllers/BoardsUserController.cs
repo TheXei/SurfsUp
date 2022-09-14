@@ -31,14 +31,11 @@ namespace SurfsUp.Controllers
         //}
 
         // GET: Boards
-        public async Task<IActionResult> Index(string sortOrder,
-                                                string currentFilter,
+        public async Task<IActionResult> Index(string currentFilter,
                                                 string search,
                                                 int? pageNumber,
                                                 string type)
         {
-            ViewData["CurrentSort"] = sortOrder;
-
             if (search != null)
             {
                 pageNumber = 1;
@@ -47,6 +44,8 @@ namespace SurfsUp.Controllers
             {
                 search = currentFilter;
             }
+            ViewData["CurrentFilter"] = search;
+            ViewData["Type"] = type;
 
             var boards = from m in _context.Board
                          select m;
