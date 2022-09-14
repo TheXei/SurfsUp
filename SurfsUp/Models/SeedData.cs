@@ -200,20 +200,47 @@ namespace SurfsUp.Models
             };
             if (!context.ApplicationUsers.Any(u => u.UserName == user.UserName))
             {
-                var password = new PasswordHasher<ApplicationUser>();
-                var hashed = password.HashPassword(user, "secret");
-                user.PasswordHash = hashed;
+                var passwords = new PasswordHasher<ApplicationUser>();
+                var hasheds = passwords.HashPassword(user, "secret");
+                user.PasswordHash = hasheds;
 
-                var userStore = new UserStore<ApplicationUser>(context);
-                var result = userStore.CreateAsync(user);
-
+                var userStores = new UserStore<ApplicationUser>(context);
+                var results = userStores.CreateAsync(user);
+                await AssignRoles(serviceProvider, user.Email, roles[0]);
             }
 
-            var assignResult = await AssignRoles(serviceProvider, user.Email, roles[0]);
-            
-            if (assignResult.Succeeded)
-                await context.SaveChangesAsync();
+            var customer = new ApplicationUser
+            {
+                //Id = "e0fc40d6-5290-495d-b978-bc06b6e668f9",
+                UserName = "customer@surfsup.dk",
+                NormalizedUserName = "CUSTOMER@SURFSUP.DK",
+                Email = "customer@surfsup.dk",
+                NormalizedEmail = "CUSTOMER@SURFSUP.DK",
+                PhoneNumber = "62731827",
+                PhoneNumberConfirmed = false,
+                LockoutEnabled = false,
+                AccessFailedCount = 0,
+                EmailConfirmed = true,
+                Name = "customer",
+                StreetAddress = "Customer Street 21",
+                City = "Odense",
+                State = "Syddanmark",
+                PostalCode = "5000"
+            };
 
+            if (!context.ApplicationUsers.Any(u => u.UserName == customer.UserName))
+            {
+                var password = new PasswordHasher<ApplicationUser>();
+                var hashed = password.HashPassword(customer, "secret");
+                customer.PasswordHash = hashed;
+
+                var userStore = new UserStore<ApplicationUser>(context);
+                var result = userStore.CreateAsync(customer).GetAwaiter().GetResult();
+                await AssignRoles(serviceProvider, customer.Email, roles[1]);
+            }
+
+            
+            await context.SaveChangesAsync();
         }
         /// <summary>
         /// This function takes in a user's email address and a role name, finds the user in the
