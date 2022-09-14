@@ -131,6 +131,14 @@ namespace SurfsUp.Controllers
             {
                 ModelState.AddModelError("StartRent", "Start date must be before end date");
             }
+            if (rent.StartRent.AddMinutes(5) < DateTime.Now)
+            {
+                ModelState.AddModelError("StartRent", "Start date must not be sooner than now");
+            }
+            if (rent.EndRent > rent.StartRent.AddDays(30))
+            {
+                ModelState.AddModelError("StartRent", "You can only rent boards for 30 days maximum");
+            }
             else
             {
                 if (ModelState.IsValid)
