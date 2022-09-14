@@ -16,7 +16,7 @@ namespace SurfsUp.Data
             : base(options)
         {
         }
-
+        public DbSet<SurfsUp.Models.ApplicationUser> ApplcationUser { get; set; } = default!;
         public DbSet<SurfsUp.Models.Board> Board { get; set; } = default!;
         
         public DbSet<SurfsUp.Models.Rent> Rent { get; set; }

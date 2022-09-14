@@ -18,11 +18,18 @@
                     List<string> Hide = new List<string>() { "id", "imageurl", "rent" };
                     if (!Hide.Any(s => propName.Contains(s)))
                     {
-                        <option value="@propertyInfo.Name">@propertyInfo.Name</option>
+                        if (@ViewData["Type"] != null && @ViewData["Type"].ToString() == @propertyInfo.Name)
+                        {
+                            <option selected="@ViewData["Type"]" value="@propertyInfo.Name">@propertyInfo.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@propertyInfo.Name">@propertyInfo.Name</option>
+                        }
                     }
                 }
             </select>
-            <input class="form-control" type="text" name="search" placeholder="Search Text" />
+            <input class="form-control" type="text" name="search" placeholder="Search Text" value="@ViewData["CurrentFilter"]" />
             <input class="btnSearch btn btn-dark" type="submit" value="Search" />
         </p>
     </form>
@@ -83,16 +90,17 @@
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
+
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-Type="@ViewData["Type"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-Type="@ViewData["Type"]"
    class="btn btn-default @nextDisabled">
     Next
 </a>

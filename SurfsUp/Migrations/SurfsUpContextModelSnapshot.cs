@@ -87,7 +87,7 @@ namespace SurfsUp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationUser");
+                    b.ToTable("ApplcationUser");
                 });
 
             modelBuilder.Entity("SurfsUp.Models.Board", b =>

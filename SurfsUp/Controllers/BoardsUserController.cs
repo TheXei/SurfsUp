@@ -30,19 +30,20 @@ namespace SurfsUp.Controllers
         //public Task SortAndSearch(IQueryable<Board> boardList, string type, string search)
         //{
         //    //IQueryable<Board> boards = boardList;
-            
+
 
         //    return Task.CompletedTask;
         //}
+        
 
         // GET: Boards
-        public async Task<IActionResult> Index(string sortOrder,
-                                                string currentFilter,
+        public async Task<IActionResult> Index(string currentFilter,
                                                 string search,
                                                 int? pageNumber,
                                                 string type)
         {
-            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentFilter"] = search;
+            ViewData["Type"] = type;
 
             if (search != null)
             {
@@ -141,10 +142,10 @@ namespace SurfsUp.Controllers
             {
                 var _userManager = new UserStore<ApplicationUser>(_identityContext);
                 var currentUser = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
-                
+
                 if (!_context.Rent.Any(r => r.ApplicationUserId == currentUser.Id))
                     rent.ApplicationUser = currentUser;
-                
+
                 rent.ApplicationUserId = currentUser.Id;
             }
             

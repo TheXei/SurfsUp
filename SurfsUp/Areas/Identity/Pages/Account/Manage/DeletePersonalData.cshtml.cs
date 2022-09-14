@@ -8,24 +8,31 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SurfsUp.Data;
+using SurfsUp.Migrations;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace SurfsUp.Areas.Identity.Pages.Account.Manage
 {
     public class DeletePersonalDataModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly SurfsUpContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            SurfsUpContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -68,6 +75,16 @@ namespace SurfsUp.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+        //public virtual Task DeleteAsync(IQueryable<Rent> rent)
+        //{
+        //    if (rent == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(rent));
+        //    }
+
+        //    return Store.DeleteAsync(user, CancellationToken);
+        //}
+
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -85,7 +102,21 @@ namespace SurfsUp.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
+            
+            if (_context.Rent.Any(b => b.ApplicationUserId == user.Id))
+            {
+                //Remove Rents
+                var getRents = _context.Rent.Where(b => b.ApplicationUserId == user.Id).Include(b => b.ApplicationUser);
+                _context.Rent.RemoveRange(getRents);
 
+                //Remove User assosiated with Rent
+                var applicationUser = _context.ApplcationUser.Where(b => b.Id == user.Id);
+                _context.RemoveRange(applicationUser);
+
+                //Save Changes
+                await _context.SaveChangesAsync();
+            }
+            
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
