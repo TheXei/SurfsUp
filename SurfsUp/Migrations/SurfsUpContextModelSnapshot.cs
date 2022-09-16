@@ -144,6 +144,11 @@ namespace SurfsUp.Migrations
                     b.Property<DateTime>("EndRent")
                         .HasColumnType("datetime2");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<DateTime>("StartRent")
                         .HasColumnType("datetime2");
 

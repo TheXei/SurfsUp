@@ -14,6 +14,9 @@ namespace SurfsUp.Models
         [Display(Name = "End of rent")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndRent { get; set; } = DateTime.Now.AddDays(7);
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
         public virtual Board Board { get; set; }
         
         [ForeignKey("ApplicationUser")]
