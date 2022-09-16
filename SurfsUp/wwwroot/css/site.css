@@ -93,6 +93,28 @@ animation-div {
     border-top: 1px solid rgba(0,0,0,.125) !important;
 }
 
+.item-price {
+    font-size: 35px;
+    margin-right: 10px;
+    margin-left: 0;
+}
+.details-btn-ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top:20px;
+}
+.detail-btn-li {
+    margin-top: 10px;
+    
+}
+
+.detail-row {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
 @media (max-width: 450px) {
     .h-custom {
         height: 100%;
