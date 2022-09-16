@@ -41,45 +41,37 @@
     {
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
             <div class="card" style="margin-top:15px;">
-                <div class="card-header">
-                    <h5 class="card-title" style="margin:0!important;"><b>@item.Name</b></h5>
-                </div>
-                <img style="height: 275px; margin:20px auto 20px auto;" class="card-img-top img-fluid" src="@item.ImageURL" alt="">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><b>Length:</b> <pro style="float:right;">@item.Length feet</pro></li>
-                    <li class="list-group-item"><b>Width:</b> <pro style="float:right;">@item.Width inches</pro></li>
-                    <li class="list-group-item"><b>Thickness:</b> <pro style="float:right;">@item.Thickness inches</pro></li>
-                    <li class="list-group-item"><b>Volume:</b> <pro style="float:right;">@item.Volume L</pro></li>
-                    <li class="list-group-item"><b>Type:</b> <pro style="float:right;">@item.Type</pro></li>
-                    <li class="list-group-item">
-                        <b>Equipments: </b>
-                        <pro style="float:right;">
-                            <div style="text-align:right;">
-                                @if (!String.IsNullOrEmpty(item.Equipments))
-                                    @foreach (var items in item.Equipments.Split(','))
-                                    {
-                                        <p style="padding:0;margin:0;">@items</p>
-                                    }
-                                else
-                                {
-                                    <p style="padding:0;margin:0;">None</p>
-                                }
-                            </div>
-                        </pro>
-                    </li>
-                    <li class="list-group-item"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
-
-                </ul>
-                <div class="card-body">
-                    <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
-                        <li class="nav-item" style="width:45%; text-align:center;">
-                            <a asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
-                        </li>
-                        <li class="nav-item" style="width:45%; text-align:center;">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Details</a>
-                        </li>
+                <a asp-action="Details" asp-route-id="@item.Id" class="text-dark" style="text-decoration:none;">
+                    <div class="card-header">
+                        <h5 class="card-title" style="margin:0!important;"><b>@item.Name</b></h5>
+                    </div>
+                    @*ANIMATION*@
+                    <div class="animation-div" style="height: 275px;overflow:hidden;">
+                        <img class="card-img-top img-fluid image-style" src="@item.ImageURL" alt="">
+                        <ul class="hidden-ul">
+                            <li class="item-style"><b>Length:</b> <pro style="float:right;">@item.Length feet</pro></li>
+                            <li class="item-style"><b>Thickness:</b> <pro style="float:right;">@item.Width inches</pro></li>
+                            <li class="item-style"><b>Volume:</b> <pro style="float:right;">@item.Volume inches</pro></li>
+                        </ul>
+                    </div>
+                </a>
+                @*NOT MOVING*@
+                <div>
+                    <ul style="margin-bottom:0px;padding-left:0;margin-top:10px;">
+                        <li style="font-size:16px;border:1px 0px 0px 0px solidrgba(0,0,0,.125)!important;"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
                     </ul>
+                    <div class="card-body">
+                        <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
+                            <li class="nav-item" style="width:45%; text-align:center;">
+                                <a asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
+                            </li>
+                            <li class="nav-item" style="width:45%; text-align:center;">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Details</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+                @*NOT MOVING END*@
             </div>
         </div>
     }

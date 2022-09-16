@@ -33,6 +33,45 @@ body {
     height: calc(100% - 73px);
 }
 
+animation-div {
+    
+}
+
+.animation-div img {
+    margin-top: 15px;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 250px;
+    transition: width 250ms, height 250ms;
+}
+
+.animation-div:hover img {
+    height: 175px;
+    width: 180px;
+    /*width: 175px;*/
+    /*transform: scale(0.5);*/
+    /*transform:translateY(-75px);*/
+}
+
+.hidden-ul {
+    margin-top:15px;
+    list-style: none;
+    padding-left: 0;
+}
+
+.item-style {
+    margin-right:10px;
+    margin-left: 10px;
+}
+
+.item-style::before {
+    content: "\276F";
+    margin-right: 10px;
+    color: green;
+}
+
 @media (max-width: 450px) {
     .h-custom {
         height: 100%;
