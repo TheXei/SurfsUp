@@ -1,0 +1,48 @@
+﻿@model SurfsUp.Models.Rent
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Rent</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartRent)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartRent)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndRent)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EndRent)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RowVersion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RowVersion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Board)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Board.ImageURL)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.BoardId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
