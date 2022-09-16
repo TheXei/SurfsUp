@@ -89,7 +89,7 @@ namespace SurfsUp.Controllers
                 };
             }
 
-            int pageSize = 4;
+            int pageSize = 8;
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

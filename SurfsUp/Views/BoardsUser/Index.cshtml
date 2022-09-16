@@ -7,7 +7,7 @@
 
 
 <div style="display:flex; justify-content:space-between; align-items:center;">
-    <h1>Board Manager</h1>
+    <h1>Boards for Rent</h1>
     <form asp-controller="BoardsUser" asp-action="Index" method="get">
         <p style="margin:0;display:flex;">
             <select class="me-2 form-control" name="type">
@@ -57,17 +57,17 @@
                 </a>
                 @*NOT MOVING*@
                 <div>
-                    <ul style="margin-bottom:0px;padding-left:0;margin-top:10px;">
-                        <li style="font-size:16px;border:1px 0px 0px 0px solidrgba(0,0,0,.125)!important;"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
+                    <ul class="price-ul">
+                        <li class="price-li"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
                     </ul>
-                    <div class="card-body">
+                    <div class="card-body board-btn" >
                         <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
-                            <li class="nav-item" style="width:45%; text-align:center;">
+                            <li class="nav-item" style="width:100%; text-align:center;">
                                 <a asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
                             </li>
-                            <li class="nav-item" style="width:45%; text-align:center;">
+                            @*<li class="nav-item" style="width:45%; text-align:center;">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Details</a>
-                            </li>
+                            </li>*@
                         </ul>
                     </div>
                 </div>

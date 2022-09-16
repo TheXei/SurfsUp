@@ -48,28 +48,49 @@ animation-div {
 }
 
 .animation-div:hover img {
-    height: 175px;
-    width: 180px;
-    /*width: 175px;*/
-    /*transform: scale(0.5);*/
-    /*transform:translateY(-75px);*/
+    height: 165px;
+    width: 170px;
 }
 
 .hidden-ul {
-    margin-top:15px;
+    margin-top: 15px;
     list-style: none;
     padding-left: 0;
+    /*margin-bottom: 20px;*/
 }
+
 
 .item-style {
     margin-right:10px;
     margin-left: 10px;
+    
 }
 
 .item-style::before {
     content: "\276F";
     margin-right: 10px;
     color: green;
+}
+
+.price-ul {
+    list-style: none;
+    margin-bottom: 0px;
+    padding-left: 0;
+    padding-top: 10px;
+    /*margin-top: 10px;*/
+    border-top: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.price-li {
+    font-size: 17px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.board-btn {
+    margin-top: 8px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,.125) !important;
 }
 
 @media (max-width: 450px) {
