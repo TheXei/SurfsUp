@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SurfsUp.styles.css" asp-append-version="true" />
+    <script src="https://kit.fontawesome.com/2608bbdb27.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
@@ -25,9 +26,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="BoardsUser" asp-action="Index">Boards</a>
                         </li>
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        </li>*@
                         @if (User.IsInRole(StaticDetails.Role_User_Admin))
                         {
                             <li class="nav-item">
@@ -60,6 +61,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

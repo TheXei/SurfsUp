@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -59,7 +60,7 @@ namespace SurfsUp.Models
 
         public string Equipments { get; set; }
 
-        [Required]
+        [ValidateNever]
         public string ImageURL { get; set; }
 
         public virtual Rent? Rent { get; set; }

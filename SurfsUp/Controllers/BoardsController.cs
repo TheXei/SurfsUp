@@ -17,10 +17,12 @@ namespace SurfsUp.Controllers
     public class BoardsController : Controller
     {
         private readonly SurfsUpContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public BoardsController(SurfsUpContext context)
+        public BoardsController(SurfsUpContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         
@@ -101,10 +103,24 @@ namespace SurfsUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board)
+        public async Task<IActionResult> Create([Bind("Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString();
+                    var upload = Path.Combine(wwwRootPath, @"images\boards");
+                    var extension = Path.GetExtension(file.FileName);
+
+                    using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                    board.ImageURL = @"\images\boards\" + fileName + extension;
+                }
+                
                 _context.Add(board);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
