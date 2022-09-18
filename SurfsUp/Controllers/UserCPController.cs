@@ -29,7 +29,7 @@ namespace SurfsUp.Controllers
         {
             var _userManager = new UserStore<ApplicationUser>(_identityContext);
             var currentUser = _userManager.FindByNameAsync(User.Identity.Name.ToUpper()).GetAwaiter().GetResult();
-            var rents = _context.Rent.Include(r => r.Board).Where(b => b.ApplicationUserId == currentUser.Id).Distinct();
+            var rents = _context.Rent.Where(r => r.ApplicationUserId == currentUser.Id).Include(r => r.Board).Distinct();
             return View(await rents.ToListAsync());
         }
 
