@@ -34,7 +34,7 @@ namespace SurfsUp.Controllers
 
         //    return Task.CompletedTask;
         //}
-        
+
 
         // GET: Boards
         public async Task<IActionResult> Index(string currentFilter,
@@ -54,18 +54,15 @@ namespace SurfsUp.Controllers
                 search = currentFilter;
             }
 
+            /* Removing expired rents */
+            var expiredRents = _context.Rent.Where(r => r.EndRent < DateTime.Now);
+            _context.RemoveRange(expiredRents);
+            await _context.SaveChangesAsync();
+
             var boards = from m in _context.Board
                          select m;
 
-            boards = boards.Include(r => r.Rent);
-
-            await boards.Where(board => board.Rent != null && board.Rent.EndRent < DateTime.Now).ForEachAsync(board => board.Rent = null);
-            {
-                await _context.SaveChangesAsync();
-            }
-
-            boards = boards.Where(board => board.Rent == null);
-
+            boards = boards.Include(r => r.Rent).Where(board => board.Rent == null);
 
             /* Filtering the boards by the search string and then sorting them by the type. */
             if (!String.IsNullOrEmpty(search))
@@ -119,10 +116,10 @@ namespace SurfsUp.Controllers
             {
                 return NotFound();
             }
-            
+
             var rent = new Rent();
-           
-            
+
+
             return View(rent);
         }
 
@@ -162,12 +159,12 @@ namespace SurfsUp.Controllers
             {
                 ModelState.AddModelError("StartRent", "Start date must be before end date");
             }
-            
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                        
+
                     _context.Add(rent);
                     await _context.SaveChangesAsync();
                 }
@@ -177,13 +174,13 @@ namespace SurfsUp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            
+
             return View(rent);
         }
 
         private bool BoardExists(int id)
         {
-          return _context.Board.Any(e => e.Id == id);
+            return _context.Board.Any(e => e.Id == id);
         }
     }
 }
