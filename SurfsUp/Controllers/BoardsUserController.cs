@@ -62,7 +62,7 @@ namespace SurfsUp.Controllers
             var boards = from m in _context.Board
                          select m;
 
-            boards = boards.Include(r => r.Rent).Where(board => board.Rent == null);
+            boards = boards.Where(board => board.Rent == null);
 
             /* Filtering the boards by the search string and then sorting them by the type. */
             if (!String.IsNullOrEmpty(search))
