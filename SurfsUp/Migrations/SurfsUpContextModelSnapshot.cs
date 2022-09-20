@@ -108,6 +108,9 @@ namespace SurfsUp.Migrations
                     b.Property<float>("Length")
                         .HasColumnType("real");
 
+                    b.Property<DateTime>("LockDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -115,6 +118,11 @@ namespace SurfsUp.Migrations
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<float>("Thickness")
                         .HasColumnType("real");

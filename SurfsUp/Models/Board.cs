@@ -63,6 +63,8 @@ namespace SurfsUp.Models
 
         public virtual Rent? Rent { get; set; }
 
-        //public ICollection<Equipment> Equipments { get; set; }
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+        public DateTime LockDate { get; set; }
     }
 }

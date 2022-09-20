@@ -79,10 +79,10 @@
         function ValidateInput() {
             if (document.getElementById("uploadInput").value == "") {
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'Error',
                     title: 'Oops...',
                     text: 'Please upload an image!',
-                    footer: 'hint: click on the "Choose File" button',
+                    footer: 'Hint: Click on the "Choose File" button',
                 });
                 return false;
             }
