@@ -98,11 +98,11 @@ namespace SurfsUp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Equipments")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Length")
@@ -131,6 +131,8 @@ namespace SurfsUp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Board");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Board");
                 });
 
             modelBuilder.Entity("SurfsUp.Models.Rent", b =>
@@ -152,6 +154,16 @@ namespace SurfsUp.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Rent");
+                });
+
+            modelBuilder.Entity("SurfsUp.Models.SUP", b =>
+                {
+                    b.HasBaseType("SurfsUp.Models.Board");
+
+                    b.Property<string>("Equipment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("SUP");
                 });
 
             modelBuilder.Entity("SurfsUp.Models.Rent", b =>

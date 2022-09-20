@@ -84,7 +84,7 @@ namespace SurfsUp.Controllers
                     "volume" => from b in boards orderby b.Volume select b,
                     "type" => from b in boards orderby b.Type select b,
                     "price" => from b in boards orderby b.Price select b,
-                    "equipments" => from b in boards orderby b.Equipments select b,
+                    //"equipments" => from b in boards orderby b.Equipments select b,
                     _ => from b in boards orderby b.Name select b,
                 };
             }

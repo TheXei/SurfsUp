@@ -29,7 +29,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p4_i2_w640.jpeg",
-                        Equipments = ""
+                        //Equipments = ""
                     },
 
                     new Board
@@ -42,7 +42,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Funboard,
                         Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p10_i2_w640.jpeg",
-                        Equipments = ""
+                        //Equipments = ""
                     },
 
                     new Board
@@ -55,7 +55,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Funboard,
                         Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p20_i2_w640.jpeg",
-                        Equipments = ""
+                        //Equipments = ""
                     },
 
                     new Board
@@ -68,7 +68,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p26_i2_w640.jpeg",
-                        Equipments = ""
+                        //Equipments = ""
                     },
 
                     new Board
@@ -81,7 +81,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Longboard,
                         Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p3_i2_w640.jpeg",
-                        Equipments = ""
+                        //Equipments = ""
                     },
 
                     new Board
@@ -94,7 +94,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 50f,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p5_i4_w640.jpeg",
-                        Equipments = ""
+                        //Equipments = ""
                     },
 
                     new Board
@@ -132,7 +132,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Funboard,
                         Price = 611,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p31_i2_w640.jpeg",
-                        Equipments = "Fin,Paddle,Pump,Leash"
+                        //Equipments = "Fin,Paddle,Pump,Leash"
                     },
 
                     new Board
@@ -145,7 +145,7 @@ namespace SurfsUp.Models
                         Type = BoardType.Shortboard,
                         Price = 1304,
                         ImageURL = "https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p26_i2_w640.jpeg",
-                        Equipments = "Fin,Paddle,Pump,Leash"
+                        //Equipments = "Fin,Paddle,Pump,Leash"
                     }
                 );
                 context.SaveChanges();

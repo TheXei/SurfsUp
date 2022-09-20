@@ -58,8 +58,6 @@ namespace SurfsUp.Models
         [Required]
         public float Price { get; set; }
 
-        public string Equipments { get; set; }
-
         [ValidateNever]
         public string ImageURL { get; set; }
 

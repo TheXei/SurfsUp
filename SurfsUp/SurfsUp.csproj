@@ -28,6 +28,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="Migrations\SurfsUpIdentity\" />
     <Folder Include="wwwroot\images\boards\" />
+    <Folder Include="wwwroot\images\boards\" />
   </ItemGroup>
 
 </Project>

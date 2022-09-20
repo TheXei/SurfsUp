@@ -65,7 +65,7 @@ namespace SurfsUp.Controllers
                     "volume" => from b in boards orderby b.Volume select b,
                     "type" => from b in boards orderby b.Type select b,
                     "price" => from b in boards orderby b.Price select b,
-                    "equipments" => from b in boards orderby b.Equipments select b,
+                    //"equipments" => from b in boards orderby b.Equipments select b,
                     _ => from b in boards orderby b.Name select b,
                 };
             }
@@ -120,8 +120,27 @@ namespace SurfsUp.Controllers
                     }
                     board.ImageURL = @"\images\boards\" + fileName + extension;
                 }
-                
-                _context.Add(board);
+
+                if (board.Type == BoardType.SUP)
+                {
+                    SUP newSUP = new()
+                    {
+                        Id = board.Id,
+                        Name = board.Name,
+                        Length = board.Length,
+                        Width = board.Width,
+                        Thickness = board.Thickness,
+                        Volume = board.Volume,
+                        Type = board.Type,
+                        Price = board.Price,
+                        ImageURL = board.ImageURL,
+                        Equipment = "Paddle, Fin"
+                    };
+                    _context.Add(newSUP);
+                }
+                else
+                    _context.Add(board);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
