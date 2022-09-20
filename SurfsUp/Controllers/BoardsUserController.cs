@@ -13,6 +13,8 @@ using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace SurfsUp.Controllers
 {
@@ -35,16 +37,19 @@ namespace SurfsUp.Controllers
         //    return Task.CompletedTask;
         //}
 
-
         // GET: Boards
         public async Task<IActionResult> Index(string currentFilter,
                                                 string search,
                                                 int? pageNumber,
-                                                string type)
+                                                string type,
+                                                bool rentError)
         {
             ViewData["CurrentFilter"] = search;
             ViewData["Type"] = type;
-
+            
+            if (rentError)
+                ViewData["Locked"] = "Someone else is currently renting this Board. Please try again later.";
+            
             if (search != null)
             {
                 pageNumber = 1;
@@ -54,15 +59,18 @@ namespace SurfsUp.Controllers
                 search = currentFilter;
             }
 
-            /* Removing expired rents */
-            var expiredRents = _context.Rent.Where(r => r.EndRent < DateTime.Now);
-            _context.RemoveRange(expiredRents);
-            await _context.SaveChangesAsync();
-
             var boards = from m in _context.Board
                          select m;
 
+            boards = boards.Include(r => r.Rent);
+
+            await boards.Where(board => board.Rent != null && board.Rent.EndRent < DateTime.Now).ForEachAsync(board => board.Rent = null);
+            {
+                await _context.SaveChangesAsync();
+            }
+
             boards = boards.Where(board => board.Rent == null);
+
 
             /* Filtering the boards by the search string and then sorting them by the type. */
             if (!String.IsNullOrEmpty(search))
@@ -86,7 +94,7 @@ namespace SurfsUp.Controllers
                 };
             }
 
-            int pageSize = 4;
+            int pageSize = 8;
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
@@ -108,19 +116,28 @@ namespace SurfsUp.Controllers
             return View(board);
         }
 
+        //method that compares to long values
+        
+
         //GET MOETHOD
         public async Task<IActionResult> RentOut(int? id)
         {
-
             if (id == null || _context.Board == null)
             {
                 return NotFound();
             }
-
+            var boardToUpdate = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+            TimeSpan isTimerOver = DateTime.Now - boardToUpdate.LockDate;
+            if (isTimerOver.TotalMinutes < 5)
+            {
+                return RedirectToAction(nameof(Index), new { @rentError = true });
+            }
+            boardToUpdate.LockDate = DateTime.Now;
+            await _context.SaveChangesAsync();
             var rent = new Rent();
-
-
             return View(rent);
+
+            
         }
 
         //POST METHOD
@@ -140,8 +157,8 @@ namespace SurfsUp.Controllers
                 var _userManager = new UserStore<ApplicationUser>(_identityContext);
                 var currentUser = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
 
-                if (_context.ApplcationUser.Find(currentUser.Id) == null)
-                    _context.Add(currentUser);
+                if (!_context.Rent.Any(r => r.ApplicationUserId == currentUser.Id))
+                    rent.ApplicationUser = currentUser;
 
                 rent.ApplicationUserId = currentUser.Id;
             }
@@ -159,12 +176,12 @@ namespace SurfsUp.Controllers
             {
                 ModelState.AddModelError("StartRent", "Start date must be before end date");
             }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-
+                        
                     _context.Add(rent);
                     await _context.SaveChangesAsync();
                 }
@@ -174,13 +191,13 @@ namespace SurfsUp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
+            
             return View(rent);
         }
 
         private bool BoardExists(int id)
         {
-            return _context.Board.Any(e => e.Id == id);
+          return _context.Board.Any(e => e.Id == id);
         }
     }
 }
