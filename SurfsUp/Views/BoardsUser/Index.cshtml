@@ -8,6 +8,7 @@
 
 <div style="display:flex; justify-content:space-between; align-items:center;">
     <h1>Boards for Rent</h1>
+
     <form asp-controller="BoardsUser" asp-action="Index" method="get">
         <p style="margin:0;display:flex;">
             <select class="me-2 form-control" name="type">
@@ -34,9 +35,15 @@
         </p>
     </form>
 </div>
-
+@{
+    if (ViewData["Locked"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <b>@ViewData["Locked"]</b>
+        </div>
+    }
+}
 <div class="row" style="display:flex;flex-wrap:wrap; padding:0!important;">
-
     @foreach (var item in Model)
     {
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
@@ -60,14 +67,31 @@
                     <ul class="price-ul">
                         <li class="price-li"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
                     </ul>
-                    <div class="card-body board-btn" >
+                    <div class="card-body board-btn">
                         <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
                             <li class="nav-item" style="width:100%; text-align:center;">
-                                <a asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
+                                @{
+                                    TimeSpan isTimerOver = DateTime.Now - item.LockDate;
+                                    int timeLeft = 300000 - (int)isTimerOver.TotalMilliseconds;
+                                    if (isTimerOver.TotalMinutes > 5)
+                                    {
+                                        <a asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
+                                    }
+                                    else
+                                    {
+                                        var uid = Guid.NewGuid().ToString("n");
+                                        <a id="rent-btn-Hidden-@uid" asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark rentHidden">Rent</a>
+                                        <div name="@timeLeft" id="loading-group-@uid" class="rentLoading">
+                                            <div class="spinner-square">
+                                                <div class="square-1 square"></div>
+                                                <div class="square-2 square"></div>
+                                                <div class="square-3 square"></div>
+                                            </div>
+                                            <p class="loading-text">Currently being rent...</p>
+                                        </div>
+                                    }
+                                }
                             </li>
-                            @*<li class="nav-item" style="width:45%; text-align:center;">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Details</a>
-                            </li>*@
                         </ul>
                     </div>
                 </div>
@@ -81,8 +105,9 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
 
+
+<a asp-action="Index"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    asp-route-Type="@ViewData["Type"]"
@@ -96,3 +121,22 @@
    class="btn btn-default @nextDisabled">
     Next
 </a>
+
+<script>
+    var elementsShow = document.querySelectorAll('*[id^="rent-btn-Hidden-"]');
+    var elementsHide = document.querySelectorAll('*[id^="loading-group-"]');
+    var i = 0;
+    elementsHide.forEach(function (element) {
+        element.addEventListener("load", countDown(element, elementsShow[i], $(element).attr('name')));
+        i++;
+    });
+
+    function countDown(elementHide, elementShow, elmDelay) {
+        //debugger;
+        setTimeout(() => {
+            elementHide.style.display = "none";
+            elementShow.style.display = "block";
+        }, elmDelay);
+    };
+
+</script>

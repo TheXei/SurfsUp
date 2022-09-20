@@ -13,6 +13,8 @@ using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace SurfsUp.Controllers
 {
@@ -34,17 +36,20 @@ namespace SurfsUp.Controllers
 
         //    return Task.CompletedTask;
         //}
-        
 
         // GET: Boards
         public async Task<IActionResult> Index(string currentFilter,
                                                 string search,
                                                 int? pageNumber,
-                                                string type)
+                                                string type,
+                                                bool rentError)
         {
             ViewData["CurrentFilter"] = search;
             ViewData["Type"] = type;
-
+            
+            if (rentError)
+                ViewData["Locked"] = "Someone else is currently renting this Board. Please try again later.";
+            
             if (search != null)
             {
                 pageNumber = 1;
@@ -111,19 +116,28 @@ namespace SurfsUp.Controllers
             return View(board);
         }
 
+        //method that compares to long values
+        
+
         //GET MOETHOD
         public async Task<IActionResult> RentOut(int? id)
         {
-
             if (id == null || _context.Board == null)
             {
                 return NotFound();
             }
-            
+            var boardToUpdate = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+            TimeSpan isTimerOver = DateTime.Now - boardToUpdate.LockDate;
+            if (isTimerOver.TotalMinutes < 5)
+            {
+                return RedirectToAction(nameof(Index), new { @rentError = true });
+            }
+            boardToUpdate.LockDate = DateTime.Now;
+            await _context.SaveChangesAsync();
             var rent = new Rent();
-           
-            
             return View(rent);
+
+            
         }
 
         //POST METHOD
