@@ -192,7 +192,7 @@ namespace SurfsUp.Controllers
             if (await TryUpdateModelAsync<Board>(
                 boardToUpdate,
                 "",
-                s => s.Name, s => s.Price, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Equipments, s => s.ImageURL))
+                s => s.Name, s => s.Price, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.ImageURL))
             {
                 try
                 {
@@ -241,10 +241,10 @@ namespace SurfsUp.Controllers
                         {
                             ModelState.AddModelError("Type", $"Current value: {databaseValues.Type}");
                         }
-                        if (databaseValues.Equipments != clientValues.Equipments)
-                        {
-                            ModelState.AddModelError("Equipments", $"Current value: {databaseValues.Equipments}");
-                        }
+                        //if (databaseValues.Equipments != clientValues.Equipments)
+                        //{
+                        //    ModelState.AddModelError("Equipments", $"Current value: {databaseValues.Equipments}");
+                        //}
                         if (databaseValues.ImageURL != clientValues.ImageURL)
                         {
                             ModelState.AddModelError("ImageURL", $"Current value: {databaseValues.ImageURL}");
