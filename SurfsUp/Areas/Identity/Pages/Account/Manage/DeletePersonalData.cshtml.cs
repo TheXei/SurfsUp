@@ -110,7 +110,7 @@ namespace SurfsUp.Areas.Identity.Pages.Account.Manage
                 _context.Rent.RemoveRange(getRents);
 
                 //Remove User assosiated with Rent
-                var applicationUser = _context.ApplcationUser.Where(b => b.Id == user.Id);
+                var applicationUser = _context.ApplicationUser.Where(b => b.Id == user.Id);
                 _context.RemoveRange(applicationUser);
 
                 //Save Changes

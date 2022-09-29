@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfsUp", "SurfsUp\SurfsUp.csproj", "{A3B322E3-C856-4510-918B-C7FE302E990D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfsUp", "SurfsUp\SurfsUp.csproj", "{A3B322E3-C856-4510-918B-C7FE302E990D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfsUpAPI", "SurfsUpAPI\SurfsUpAPI.csproj", "{7F5A478D-5221-4972-A19B-CDBEA5918684}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{50A6DD97-EE51-4EE3-A771-68A923592782}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{FD071FC2-6B72-4266-9DD3-8E2B3A7F9EAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{A3B322E3-C856-4510-918B-C7FE302E990D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3B322E3-C856-4510-918B-C7FE302E990D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3B322E3-C856-4510-918B-C7FE302E990D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F5A478D-5221-4972-A19B-CDBEA5918684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F5A478D-5221-4972-A19B-CDBEA5918684}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F5A478D-5221-4972-A19B-CDBEA5918684}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F5A478D-5221-4972-A19B-CDBEA5918684}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50A6DD97-EE51-4EE3-A771-68A923592782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50A6DD97-EE51-4EE3-A771-68A923592782}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50A6DD97-EE51-4EE3-A771-68A923592782}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50A6DD97-EE51-4EE3-A771-68A923592782}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD071FC2-6B72-4266-9DD3-8E2B3A7F9EAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD071FC2-6B72-4266-9DD3-8E2B3A7F9EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD071FC2-6B72-4266-9DD3-8E2B3A7F9EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD071FC2-6B72-4266-9DD3-8E2B3A7F9EAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
