@@ -3,19 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurfsUp.Data;
 
 #nullable disable
 
-namespace SurfsUp.Migrations
+namespace SurfsUp.Migrations.SurfsUp
 {
     [DbContext(typeof(SurfsUpContext))]
-    [Migration("20220929075838_InitialCreate")]
-    partial class InitialCreate
+    partial class SurfsUpContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,11 +103,9 @@ namespace SurfsUp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Equipments")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Length")
@@ -128,7 +124,6 @@ namespace SurfsUp.Migrations
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
-                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
@@ -151,12 +146,14 @@ namespace SurfsUp.Migrations
 
             modelBuilder.Entity("SurfsUp.Models.Rent", b =>
                 {
-                    b.Property<int>("BoardId")
-                        .HasColumnType("int");
+                    b.Property<string>("RentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndRent")
                         .HasColumnType("datetime2");
@@ -164,9 +161,12 @@ namespace SurfsUp.Migrations
                     b.Property<DateTime>("StartRent")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("BoardId");
+                    b.HasKey("RentId");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BoardId")
+                        .IsUnique();
 
                     b.ToTable("Rent");
                 });
@@ -175,9 +175,7 @@ namespace SurfsUp.Migrations
                 {
                     b.HasOne("SurfsUp.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Rents")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("SurfsUp.Models.Board", "Board")
                         .WithOne("Rent")

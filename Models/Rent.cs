@@ -6,6 +6,7 @@ namespace SurfsUp.Models
     public class Rent
     {
         [Key]
+        public string RentId { get; set; }
         [ForeignKey("Board")]
         public int BoardId { get; set; }
         [Display(Name = "Start of rent")]
@@ -19,5 +20,10 @@ namespace SurfsUp.Models
         [ForeignKey("ApplicationUser")]
         public string? ApplicationUserId { get; set; }
         public virtual ApplicationUser? ApplicationUser { get; set; }
+
+        public Rent()
+        {
+            RentId = Guid.NewGuid().ToString();
+        }
     }
 }

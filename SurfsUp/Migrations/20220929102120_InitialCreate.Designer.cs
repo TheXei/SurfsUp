@@ -9,10 +9,10 @@ using SurfsUp.Data;
 
 #nullable disable
 
-namespace SurfsUp.Migrations.SurfsUpIdentity
+namespace SurfsUp.Migrations
 {
     [DbContext(typeof(SurfsUpIdentityContext))]
-    [Migration("20220929075958_InitialCreate")]
+    [Migration("20220929102120_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -237,11 +237,9 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Equipments")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Length")
@@ -260,7 +258,6 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
-                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
@@ -283,12 +280,14 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
 
             modelBuilder.Entity("SurfsUp.Models.Rent", b =>
                 {
-                    b.Property<int>("BoardId")
-                        .HasColumnType("int");
+                    b.Property<string>("RentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndRent")
                         .HasColumnType("datetime2");
@@ -296,9 +295,12 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                     b.Property<DateTime>("StartRent")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("BoardId");
+                    b.HasKey("RentId");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BoardId")
+                        .IsUnique();
 
                     b.ToTable("Rent");
                 });
@@ -385,9 +387,7 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                 {
                     b.HasOne("SurfsUp.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Rents")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("SurfsUp.Models.Board", "Board")
                         .WithOne("Rent")

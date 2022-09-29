@@ -9,11 +9,11 @@ using SurfsUp.Data;
 
 #nullable disable
 
-namespace SurfsUp.Migrations
+namespace SurfsUp.Migrations.SurfsUp
 {
     [DbContext(typeof(SurfsUpContext))]
-    [Migration("20220929080600_InitialCreates")]
-    partial class InitialCreates
+    [Migration("20220929102134_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -126,7 +126,6 @@ namespace SurfsUp.Migrations
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
-                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
@@ -149,12 +148,14 @@ namespace SurfsUp.Migrations
 
             modelBuilder.Entity("SurfsUp.Models.Rent", b =>
                 {
-                    b.Property<int>("BoardId")
-                        .HasColumnType("int");
+                    b.Property<string>("RentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndRent")
                         .HasColumnType("datetime2");
@@ -162,9 +163,12 @@ namespace SurfsUp.Migrations
                     b.Property<DateTime>("StartRent")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("BoardId");
+                    b.HasKey("RentId");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BoardId")
+                        .IsUnique();
 
                     b.ToTable("Rent");
                 });
@@ -173,9 +177,7 @@ namespace SurfsUp.Migrations
                 {
                     b.HasOne("SurfsUp.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Rents")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("SurfsUp.Models.Board", "Board")
                         .WithOne("Rent")

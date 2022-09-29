@@ -1,6 +1,24 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SurfsUp.Data;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddDbContext<SurfsUpContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpContext") ?? throw new InvalidOperationException("Connection string 'SurfsUpContext' not found."), b => b.MigrationsAssembly("SurfsUp")));
+
+builder.Services.AddDbContext<SurfsUpIdentityContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpIdentityContextConnection") ?? throw new InvalidOperationException("Connection string 'SurfsUpIdentityContext' not found."), b => b.MigrationsAssembly("SurfsUp")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<SurfsUpIdentityContext>();
+
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

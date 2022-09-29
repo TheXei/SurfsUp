@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
-using static System.Reflection.Metadata.BlobBuilder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace SurfsUp.Controllers
 {
@@ -157,8 +145,8 @@ namespace SurfsUp.Controllers
                 var _userManager = new UserStore<ApplicationUser>(_identityContext);
                 var currentUser = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
 
-                if (!_context.Rent.Any(r => r.ApplicationUserId == currentUser.Id))
-                    rent.ApplicationUser = currentUser;
+                if (_context.ApplicationUser.Find(currentUser.Id) == null)
+                    _context.Add(currentUser);
 
                 rent.ApplicationUserId = currentUser.Id;
             }
