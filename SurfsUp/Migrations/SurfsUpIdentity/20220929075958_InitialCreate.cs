@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SurfsUp.Migrations.SurfsUpIdentity
 {
-
-    public partial class userRent : Migration
-
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -69,8 +67,10 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                     Volume = table.Column<float>(type: "real", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
-                    Equipments = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Equipments = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
+                    LockDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -182,6 +182,7 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
             migrationBuilder.CreateTable(
                 name: "Rent",
                 columns: table => new
@@ -189,7 +190,7 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                     BoardId = table.Column<int>(type: "int", nullable: false),
                     StartRent = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndRent = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -198,7 +199,8 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                         name: "FK_Rent_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Rent_Board_BoardId",
                         column: x => x.BoardId,
@@ -277,9 +279,9 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
             migrationBuilder.DropTable(
                 name: "Board");
-
         }
     }
 }

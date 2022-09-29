@@ -17,7 +17,7 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -235,6 +235,7 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Equipments")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
@@ -244,6 +245,9 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                     b.Property<float>("Length")
                         .HasColumnType("real");
 
+                    b.Property<DateTime>("LockDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -251,6 +255,12 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<float>("Thickness")
                         .HasColumnType("real");
@@ -275,6 +285,7 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                         .HasColumnType("int");
 
                     b.Property<string>("ApplicationUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("EndRent")
@@ -295,6 +306,7 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -302,12 +314,15 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StreetAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
@@ -368,7 +383,9 @@ namespace SurfsUp.Migrations.SurfsUpIdentity
                 {
                     b.HasOne("SurfsUp.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Rents")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SurfsUp.Models.Board", "Board")
                         .WithOne("Rent")

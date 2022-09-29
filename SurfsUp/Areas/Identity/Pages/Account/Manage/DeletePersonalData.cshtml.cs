@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SurfsUp.Data;
-using SurfsUp.Migrations;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace SurfsUp.Areas.Identity.Pages.Account.Manage

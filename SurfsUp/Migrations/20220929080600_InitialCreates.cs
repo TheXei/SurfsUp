@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace SurfsUp.Migrations
 {
-    public partial class rowverson : Migration
+    public partial class InitialCreates : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,22 +16,29 @@ namespace SurfsUp.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
 
-            migrationBuilder.AddColumn<byte[]>(
-                name: "RowVersion",
+            migrationBuilder.AlterColumn<string>(
+                name: "Equipments",
                 table: "Board",
-                type: "rowversion",
-                rowVersion: true,
-                nullable: true);
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "RowVersion",
-                table: "Board");
-
             migrationBuilder.AlterColumn<string>(
                 name: "ImageURL",
+                table: "Board",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Equipments",
                 table: "Board",
                 type: "nvarchar(max)",
                 nullable: false,

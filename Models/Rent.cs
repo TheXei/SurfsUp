@@ -14,10 +14,10 @@ namespace SurfsUp.Models
         [Display(Name = "End of rent")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndRent { get; set; } = DateTime.Now.AddDays(7);
-        public virtual Board Board { get; set; }
+        public virtual Board? Board { get; set; }
         
         [ForeignKey("ApplicationUser")]
-        public string ApplicationUserId { get; set; }
-        public virtual ApplicationUser ApplicationUser { get; set; }
+        public string? ApplicationUserId { get; set; }
+        public virtual ApplicationUser? ApplicationUser { get; set; }
     }
 }

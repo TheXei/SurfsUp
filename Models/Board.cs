@@ -58,15 +58,15 @@ namespace SurfsUp.Models
         [Required]
         public float Price { get; set; }
 
-        public string Equipments { get; set; }
+        public string? Equipments { get; set; }
 
         [ValidateNever]
-        public string ImageURL { get; set; }
+        public string? ImageURL { get; set; }
 
         public virtual Rent? Rent { get; set; }
 
         [Timestamp]
-        public byte[] RowVersion { get; set; }
+        public byte[]? RowVersion { get; set; }
         public DateTime LockDate { get; set; }
     }
 }
