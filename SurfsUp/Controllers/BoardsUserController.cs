@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Text.Json;
+using Models;
+using System.Text;
+using System.Net.Http.Json;
 
 namespace SurfsUp.Controllers
 {
@@ -10,11 +14,16 @@ namespace SurfsUp.Controllers
     {
         private readonly SurfsUpContext _context;
         private readonly SurfsUpIdentityContext _identityContext;
+        private HttpClient _httpClient;
 
         public BoardsUserController(SurfsUpContext context, SurfsUpIdentityContext identityContext)
         {
             _context = context;
             _identityContext = identityContext;
+            _httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri("https://localhost:7277/api/")
+            };
         }
 
         //public Task SortAndSearch(IQueryable<Board> boardList, string type, string search)
@@ -114,18 +123,26 @@ namespace SurfsUp.Controllers
             {
                 return NotFound();
             }
-            var boardToUpdate = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-            TimeSpan isTimerOver = DateTime.Now - boardToUpdate.LockDate;
+
+            //var boardRequest = await _httpClient.GetFromJsonAsync("Rents", id);
+            //var board = await JsonSerializer.DeserializeAsync<Board>(boardRequest);
+
+            var board = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (board == null)
+            {
+                return NotFound();
+            }
+            
+            TimeSpan isTimerOver = DateTime.Now - board.LockDate;
             if (isTimerOver.TotalMinutes < 5)
             {
                 return RedirectToAction(nameof(Index), new { @rentError = true });
             }
-            boardToUpdate.LockDate = DateTime.Now;
+            board.LockDate = DateTime.Now;
             await _context.SaveChangesAsync();
             var rent = new Rent();
             return View(rent);
-
-            
         }
 
         //POST METHOD
@@ -133,22 +150,18 @@ namespace SurfsUp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RentOut(int id, [Bind(include: "StartRent,EndRent")] Rent rent)
         {
-            if (!BoardExists(id))
+            //instansiere ny RentDto
+            RentDto rentDto = new RentDto()
             {
-                return NotFound();
-            }
+                BoardId = id,
+                StartRent = rent.StartRent,
+                EndRent = rent.EndRent
+            };
 
-            rent.BoardId = id;
-
+            //tilføjer bruger hvis logger ind
             if (User.Identity.IsAuthenticated)
             {
-                var _userManager = new UserStore<ApplicationUser>(_identityContext);
-                var currentUser = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
-
-                if (_context.ApplicationUser.Find(currentUser.Id) == null)
-                    _context.Add(currentUser);
-
-                rent.ApplicationUserId = currentUser.Id;
+                rentDto.UserName = User.Identity.Name;
             }
 
             if (rent.StartRent.AddMinutes(5) < DateTime.Now)
@@ -169,9 +182,8 @@ namespace SurfsUp.Controllers
             {
                 try
                 {
-                        
-                    _context.Add(rent);
-                    await _context.SaveChangesAsync();
+                    //post as json.
+                    var jsonPost = await _httpClient.PostAsJsonAsync("rents", rentDto);
                 }
                 catch (Exception ex)
                 {
@@ -180,7 +192,7 @@ namespace SurfsUp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             
-            return View(rent);
+            return View(rentDto);
         }
 
         private bool BoardExists(int id)
