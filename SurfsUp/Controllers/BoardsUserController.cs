@@ -183,7 +183,7 @@ namespace SurfsUp.Controllers
                 try
                 {
                     //post as json.
-                    var jsonPost = await _httpClient.PostAsJsonAsync("rents", rentDto);
+                    var jsonPost = await _httpClient.PostAsJsonAsync("rent", rentDto);
                 }
                 catch (Exception ex)
                 {
