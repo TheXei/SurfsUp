@@ -21,28 +21,42 @@ namespace SurfsUpAPI.Controllers
             _identityContext = identityContext;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<RentDto>> GetRents(string id)
+        [HttpGet("{UserName}")]
+        public async Task<ActionResult<List<RentDto>>> GetRents(string UserName)
         {
-            if (await _context.ApplicationUser.FindAsync(id) == null)
+            var _userManager = new UserStore<ApplicationUser>(_identityContext);
+            var currentUser = _userManager.FindByNameAsync(UserName).GetAwaiter().GetResult();
+
+            var rent = _context.Rent.Where(b => b.ApplicationUserId == currentUser.Id);
+
+            if (rent == null)
+                return NotFound();
+
+            List<RentDto> rentList = new List<RentDto>();
+
+            await rent.ForEachAsync(b =>
             {
-                return NotFound();
-            }
-            var rents = _context.Rent.Where(x => x.ApplicationUserId != null && x.ApplicationUserId == id);
+                rentList.Add(new RentDto
+                {
+                    BoardId = b.BoardId,
+                    StartRent = b.StartRent,
+                    EndRent = b.EndRent,
+                    UserName = currentUser.UserName
+                });
+            });
 
-            if (rents == null)
-                return NotFound();
-
-            List<RentDto> dtoRents = new();
-            await rents.ForEachAsync(x => dtoRents.Add(new() { BoardId = x.BoardId, StartRent = x.StartRent, EndRent = x.EndRent }));
-            return Ok(dtoRents);
+            return rentList;
         }
-
 
         private bool BoardExists(int id)
         {
             return _context.Board.Any(e => e.Id == id);
         }
+
+        private bool UserExists(string id)
+        {
+            return _context.ApplicationUser.Any(e => e.Id == id);
+        }
+
     }
 }
-

@@ -21,14 +21,28 @@ namespace SurfsUpAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Rent>> GetRent(string id)
+        public async Task<ActionResult<RentDto>> GetRent(string id)
         {
             var rent = await _context.Rent.FindAsync(id);
 
             if (rent == null)
                 return NotFound();
 
-            return rent;
+            RentDto rentDto = new RentDto()
+            {
+                BoardId = rent.BoardId,
+                StartRent = rent.StartRent,
+                EndRent = rent.EndRent
+            };
+
+            var user = await _identityContext.Users.FindAsync(rent.ApplicationUserId);
+
+            if (user != null)
+            {
+                rentDto.UserName = user.UserName;
+            }
+
+            return rentDto;
         }
 
         [HttpPost]

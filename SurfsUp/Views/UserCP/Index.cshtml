@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SurfsUp.Models.Rent>
+﻿@model IEnumerable<Models.RentDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,7 +9,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Board.Name)
             </th>
             <th>
@@ -32,7 +32,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Board.Equipments)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.StartRent)
             </th>
@@ -46,7 +46,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
+               @* <td>
                     @Html.DisplayFor(modelItem => item.Board.Name)
                 </td>
                 <td>
@@ -69,17 +69,17 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Board.Equipments)
-                </td>
+                </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.StartRent)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.EndRent)
                 </td>
-                <td>
+               @* <td>
                     <a asp-action="" asp-route-id="@item.Board.Id">Cancel</a> |
                     <a asp-action="Details" asp-route-id="@item.Board.Id">Details</a>
-                </td>
+                </td>*@
             </tr>
         }
     </tbody>
