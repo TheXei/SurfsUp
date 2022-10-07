@@ -5,11 +5,11 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfsUp", "SurfsUp\SurfsUp.csproj", "{A3B322E3-C856-4510-918B-C7FE302E990D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfsUpAPI", "SurfsUpAPI\SurfsUpAPI.csproj", "{7F5A478D-5221-4972-A19B-CDBEA5918684}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfsUpAPI", "SurfsUpAPI\SurfsUpAPI.csproj", "{7F5A478D-5221-4972-A19B-CDBEA5918684}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{50A6DD97-EE51-4EE3-A771-68A923592782}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{50A6DD97-EE51-4EE3-A771-68A923592782}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{FD071FC2-6B72-4266-9DD3-8E2B3A7F9EAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{FD071FC2-6B72-4266-9DD3-8E2B3A7F9EAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

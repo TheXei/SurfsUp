@@ -7,6 +7,7 @@ using System.Text.Json;
 using Models;
 using System.Text;
 using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace SurfsUp.Controllers
 {
@@ -34,6 +35,14 @@ namespace SurfsUp.Controllers
         //    return Task.CompletedTask;
         //}
 
+        async Task<string> GetAsync(string call)
+        {
+            using HttpResponseMessage response = await _httpClient.GetAsync(call);
+
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
         // GET: Boards
         public async Task<IActionResult> Index(string currentFilter,
                                                 string search,
@@ -43,10 +52,10 @@ namespace SurfsUp.Controllers
         {
             ViewData["CurrentFilter"] = search;
             ViewData["Type"] = type;
-            
+
             if (rentError)
                 ViewData["Locked"] = "Someone else is currently renting this Board. Please try again later.";
-            
+
             if (search != null)
             {
                 pageNumber = 1;
@@ -55,44 +64,14 @@ namespace SurfsUp.Controllers
             {
                 search = currentFilter;
             }
+            bool premium = User.Identity.IsAuthenticated;
 
-            var boards = from m in _context.Board
-                         select m;
-
-            boards = boards.Include(r => r.Rent);
-
-            await boards.Where(board => board.Rent != null && board.Rent.EndRent < DateTime.Now).ForEachAsync(board => board.Rent = null);
-            {
-                await _context.SaveChangesAsync();
-            }
-
-            boards = boards.Where(board => board.Rent == null);
-
-
-            /* Filtering the boards by the search string and then sorting them by the type. */
-            if (!String.IsNullOrEmpty(search))
-                boards = from b in boards where b.Name.ToLower()!.Contains(search.ToLower()) select b;
-
-            if (!String.IsNullOrEmpty(type))
-            {
-                //PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(Board)).Find("Length", true);
-                //var test2 = from b in _context.Board.ToList() orderby prop.GetValue(b) select b; //THIS WORKS
-                //ReturnedList = (from b in _context.Board.ToList() orderby prop.GetValue(b) select b).ToList(); ///Works too
-                boards = type.ToLower() switch
-                {
-                    "name" => from b in boards orderby b.Name select b,
-                    "length" => from b in boards orderby b.Length select b,
-                    "thickness" => from b in boards orderby b.Thickness select b,
-                    "volume" => from b in boards orderby b.Volume select b,
-                    "type" => from b in boards orderby b.Type select b,
-                    "price" => from b in boards orderby b.Price select b,
-                    "equipments" => from b in boards orderby b.Equipments select b,
-                    _ => from b in boards orderby b.Name select b,
-                };
-            }
+            string request = $"v2/boards/{premium}?" + string.Join("&", new[] { $"search={search}", $"type={type}" });
+            var jsonString = GetAsync(request).Result;
+            var boards = JsonConvert.DeserializeObject<List<Board>>(jsonString);
 
             int pageSize = 8;
-            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Board>.CreateAsync(boards, pageNumber ?? 1, pageSize));
         }
 
         // GET: BoardsUser/Details/5
