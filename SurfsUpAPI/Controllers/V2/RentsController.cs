@@ -6,9 +6,10 @@ using SurfsUp.Models;
 using SurfsUp.Data;
 using Models;
 
-namespace SurfsUpAPI.Controllers
+namespace SurfsUpAPI.Controllers.V2
 {
-    [Route("api/[controller]")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class RentsController : ControllerBase
     {

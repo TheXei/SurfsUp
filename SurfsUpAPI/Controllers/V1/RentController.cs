@@ -5,9 +5,10 @@ using Models;
 using SurfsUp.Data;
 using SurfsUp.Models;
 
-namespace SurfsUpAPI.Controllers
+namespace SurfsUpAPI.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class RentController : ControllerBase
     {
@@ -57,7 +58,7 @@ namespace SurfsUpAPI.Controllers
             rent.StartRent = rentDto.StartRent;
             rent.EndRent = rentDto.EndRent;
 
-            if (!String.IsNullOrEmpty(rentDto.UserName))
+            if (!string.IsNullOrEmpty(rentDto.UserName))
             {
                 var _userManager = new UserStore<ApplicationUser>(_identityContext);
                 var currentUser = _userManager.FindByNameAsync(rentDto.UserName).GetAwaiter().GetResult();

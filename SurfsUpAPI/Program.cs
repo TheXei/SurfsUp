@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using System.Text.Json.Serialization;
@@ -24,6 +25,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddApiVersioning(o => {
+    o.AssumeDefaultVersionWhenUnspecified = true;
+    //o.DefaultApiVersion = new(1, 0);
+    //o.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
 
 var app = builder.Build();
 
