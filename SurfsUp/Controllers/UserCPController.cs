@@ -26,7 +26,7 @@ namespace SurfsUp.Controllers
             _identityContext = identityContext;
             _httpClient = new HttpClient()
             {
-                BaseAddress = new Uri("https://localhost:7277/api/")
+                BaseAddress = new Uri("https://localhost:7277/api/v1.0/")
             };
         }
 

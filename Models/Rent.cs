@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SurfsUp.Models
@@ -20,6 +21,10 @@ namespace SurfsUp.Models
         [ForeignKey("ApplicationUser")]
         public string? ApplicationUserId { get; set; }
         public virtual ApplicationUser? ApplicationUser { get; set; }
+
+        [ForeignKey("Guest")]
+        public int? GuestId { get; set; }
+        public virtual Guest? Guest { get; set; }
 
         public Rent()
         {

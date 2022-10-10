@@ -12,5 +12,6 @@ namespace Models
         public DateTime StartRent { get; set; }
         public DateTime EndRent { get; set; }
         public string? UserName { get; set; }
+        
     }
 }

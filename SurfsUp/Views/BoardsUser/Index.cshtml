@@ -75,12 +75,12 @@
                                     int timeLeft = 300000 - (int)isTimerOver.TotalMilliseconds;
                                     if (isTimerOver.TotalMinutes > 5)
                                     {
-                                        <a asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
+                                        <a asp-action="@(User.Identity.IsAuthenticated ? "RentOut" : "GuestRentOut")" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
                                     }
                                     else
                                     {
                                         var uid = Guid.NewGuid().ToString("n");
-                                        <a id="rent-btn-Hidden-@uid" asp-action="RentOut" asp-route-id="@item.Id" class="nav-link text-light bg-dark rentHidden">Rent</a>
+                                        <a id="rent-btn-Hidden-@uid" asp-action="@(User.Identity.IsAuthenticated ? "RentOut" : "GuestRentOut")" asp-route-id="@item.Id" class="nav-link text-light bg-dark rentHidden">Rent</a>
                                         <div name="@timeLeft" id="loading-group-@uid" class="rentLoading">
                                             <div class="spinner-square">
                                                 <div class="square-1 square"></div>

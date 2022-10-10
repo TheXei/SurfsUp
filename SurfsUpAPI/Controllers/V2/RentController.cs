@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.DTOs;
 using SurfsUp.Data;
 using SurfsUp.Models;
 
@@ -22,32 +23,34 @@ namespace SurfsUpAPI.Controllers.V2
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RentDto>> GetRent(string id)
+        public async Task<ActionResult<GuestRentDto>> GetGuestRent(string id)
         {
             var rent = await _context.Rent.FindAsync(id);
 
             if (rent == null)
                 return NotFound();
 
-            RentDto rentDto = new RentDto()
+            GuestRentDto rentDto = new GuestRentDto()
             {
                 BoardId = rent.BoardId,
                 StartRent = rent.StartRent,
                 EndRent = rent.EndRent
             };
 
-            var user = await _identityContext.Users.FindAsync(rent.ApplicationUserId);
+            var user = await _context.Guest.FindAsync(rent.GuestId);
 
             if (user != null)
             {
-                rentDto.UserName = user.UserName;
+                rentDto.FirstName = user.FirstName;
+                rentDto.LastName = user.LastName;
+                rentDto.PhoneNumber = user.PhoneNumber;
             }
 
             return rentDto;
         }
 
         [HttpPost]
-        public async Task<ActionResult<RentDto>> RentOut(RentDto rentDto) //int id, [Bind(include: "StartRent,EndRent")] Rent rent, string? userName
+        public async Task<ActionResult<GuestRentDto>> GuestRentOut(GuestRentDto rentDto) //int id, [Bind(include: "StartRent,EndRent")] Rent rent, string? userName
         {
             if (!BoardExists(rentDto.BoardId))
             {
@@ -58,15 +61,27 @@ namespace SurfsUpAPI.Controllers.V2
             rent.StartRent = rentDto.StartRent;
             rent.EndRent = rentDto.EndRent;
 
-            if (!string.IsNullOrEmpty(rentDto.UserName))
+            var guest = new Guest();
+
+            if (_context.Guest.Any(x => x.PhoneNumber == rentDto.PhoneNumber))
             {
-                var _userManager = new UserStore<ApplicationUser>(_identityContext);
-                var currentUser = _userManager.FindByNameAsync(rentDto.UserName).GetAwaiter().GetResult();
+                guest = _context.Guest.FirstOrDefault(x => x.PhoneNumber == rentDto.PhoneNumber);
+                rent.GuestId = guest.Id;
 
-                if (_context.ApplicationUser.Find(currentUser.Id) == null)
-                    _context.Add(currentUser);
-
-                rent.ApplicationUserId = currentUser.Id;
+                var rents = _context.Rent.Where(rent => rent.GuestId == guest.Id && rent.EndRent > DateTime.Now);
+                
+                if (rents.Count() > 3)
+                    return BadRequest("You have to many rents as a guest");
+            }
+            else
+            {
+                guest = new Guest();
+                guest.FirstName = rentDto.FirstName;
+                guest.LastName = rentDto.LastName;
+                guest.PhoneNumber = rentDto.PhoneNumber;
+                await _context.Guest.AddAsync(guest);
+                await _context.SaveChangesAsync();
+                rent.GuestId = guest.Id;
             }
 
             if (rent.StartRent.AddMinutes(5) < DateTime.Now)
@@ -88,7 +103,7 @@ namespace SurfsUpAPI.Controllers.V2
                 try
                 {
 
-                    _context.Add(rent);
+                    await _context.AddAsync(rent);
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception ex)

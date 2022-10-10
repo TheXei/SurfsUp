@@ -7,6 +7,7 @@ using System.Text.Json;
 using Models;
 using System.Text;
 using System.Net.Http.Json;
+using Models.DTOs;
 
 namespace SurfsUp.Controllers
 {
@@ -183,7 +184,7 @@ namespace SurfsUp.Controllers
                 try
                 {
                     //post as json.
-                    var jsonPost = await _httpClient.PostAsJsonAsync("rent", rentDto);
+                    var jsonPost = await _httpClient.PostAsJsonAsync("v1.0/rent", rentDto);
                 }
                 catch (Exception ex)
                 {
@@ -192,6 +193,82 @@ namespace SurfsUp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             
+            return View(rentDto);
+        }
+        public async Task<IActionResult> GuestRentOut(int? id)
+        {
+            if (id == null || _context.Board == null)
+            {
+                return NotFound();
+            }
+
+            var board = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (board == null)
+            {
+                return NotFound();
+            }
+
+            TimeSpan isTimerOver = DateTime.Now - board.LockDate;
+            if (isTimerOver.TotalMinutes < 5)
+            {
+                return RedirectToAction(nameof(Index), new { @rentError = true });
+            }
+            board.LockDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+            var rent = new GuestRentViewModel
+            {
+                Rent = new Rent(),
+                Guest = new Guest()
+            };
+            return View(rent);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuestRentOut(int id, [Bind(include: "rent, guest")] GuestRentViewModel rentVM)
+        {
+            //instansiere ny RentDto
+            
+
+            if (rentVM.Rent.StartRent.AddMinutes(5) < DateTime.Now)
+            {
+                ModelState.AddModelError("StartRent", "Start date must not be sooner than now");
+            }
+            if (rentVM.Rent.EndRent > rentVM.Rent.StartRent.AddDays(30))
+            {
+                ModelState.AddModelError("StartRent", "You can only rent boards for 30 days maximum");
+            }
+
+            if (rentVM.Rent.StartRent > rentVM.Rent.EndRent)
+            {
+                ModelState.AddModelError("StartRent", "Start date must be before end date");
+            }
+            GuestRentDto rentDto = new GuestRentDto()
+            {
+                BoardId = id,
+                StartRent = rentVM.Rent.StartRent,
+                EndRent = rentVM.Rent.EndRent,
+                FirstName = rentVM.Guest.FirstName,
+                LastName = rentVM.Guest.LastName,
+                PhoneNumber = rentVM.Guest.PhoneNumber
+            };
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    
+                    //post as json.
+                    var jsonPost = await _httpClient.PostAsJsonAsync("v2/rent", rentDto);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(rentDto);
         }
 
