@@ -8,9 +8,9 @@ using Models;
 
 namespace SurfsUpAPI.Controllers.V2
 {
+    [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("2.0")]
-    [ApiController]
     public class RentsController : ControllerBase
     {
         private readonly SurfsUpContext _context;

@@ -7,9 +7,9 @@ using SurfsUp.Models;
 
 namespace SurfsUpAPI.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
-    [ApiVersion("1.0")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class RentController : ControllerBase
     {
         private readonly SurfsUpContext _context;
