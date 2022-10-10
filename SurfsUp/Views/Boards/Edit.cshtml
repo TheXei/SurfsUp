@@ -58,6 +58,11 @@
                 <select asp-for="Equipments" class="form-control" asp-items="ViewBag.equipments"></select>
             </div>*@
             <div class="form-group">
+                <label asp-for="Premium" class="control-label"></label>
+                <input asp-for="Premium" type="checkbox" value="true" />
+                <span asp-validation-for="Premium" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="ImageURL" class="control-label"></label>
                 <input asp-for="ImageURL" class="form-control" />
                 <span asp-validation-for="ImageURL" class="text-danger"></span>
