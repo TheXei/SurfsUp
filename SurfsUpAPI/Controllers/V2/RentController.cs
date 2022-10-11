@@ -70,7 +70,7 @@ namespace SurfsUpAPI.Controllers.V2
 
                 var rents = _context.Rent.Where(rent => rent.GuestId == guest.Id && rent.EndRent > DateTime.Now);
                 
-                if (rents.Count() > 3)
+                if (rents.Count() >= 3)
                     return BadRequest("You have to many rents as a guest");
             }
             else
