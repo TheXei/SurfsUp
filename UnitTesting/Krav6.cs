@@ -48,6 +48,7 @@ namespace UnitTesting
             //    api.PostAsync(, board);
             //}
             guestList = JsonConvert.DeserializeObject<List<Board>>(GetAsync($"v2/Boards/{false}?", api).Result);
+            Assert.IsTrue(guestList.All(b => b.Premium == false));
             if (hasPremiumBoards)
                 Assert.AreNotEqual(premiumList, guestList);
             else
@@ -96,7 +97,7 @@ namespace UnitTesting
                     var post = api.PostAsJsonAsync("v2/Rent/", dto);
                 }
 
-                dto.BoardId = guestList[3].Id;
+                dto.BoardId = guestList[maxRentAmount].Id;
                 dto.StartRent = DateTime.Now;
 
                 success = api.PostAsJsonAsync("v2/Rent/", dto).Result.IsSuccessStatusCode;
