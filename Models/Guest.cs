@@ -20,6 +20,8 @@ namespace SurfsUp.Models
         [Required]
         public string PhoneNumber { get; set; }
 
+        public string? IPAddress { get; set; }
+
         public ICollection<Rent>? Rents { get; set; }
     }
 }

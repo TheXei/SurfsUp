@@ -5,6 +5,7 @@ using Models;
 using Models.DTOs;
 using SurfsUp.Data;
 using SurfsUp.Models;
+using System.Net.Http;
 
 namespace SurfsUpAPI.Controllers.V2
 {
@@ -67,11 +68,7 @@ namespace SurfsUpAPI.Controllers.V2
             {
                 guest = _context.Guest.FirstOrDefault(x => x.PhoneNumber == rentDto.PhoneNumber);
                 rent.GuestId = guest.Id;
-
-                var rents = _context.Rent.Where(rent => rent.GuestId == guest.Id && rent.EndRent > DateTime.Now);
                 
-                if (rents.Count() >= 3)
-                    return BadRequest("You have too many rents as a guest");
             }
             else
             {
@@ -79,6 +76,7 @@ namespace SurfsUpAPI.Controllers.V2
                 guest.FirstName = rentDto.FirstName;
                 guest.LastName = rentDto.LastName;
                 guest.PhoneNumber = rentDto.PhoneNumber;
+                guest.IPAddress = rentDto.IPAddress;
                 await _context.Guest.AddAsync(guest);
                 await _context.SaveChangesAsync();
                 rent.GuestId = guest.Id;

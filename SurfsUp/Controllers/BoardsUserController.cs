@@ -231,7 +231,8 @@ namespace SurfsUp.Controllers
                 EndRent = rentVM.Rent.EndRent,
                 FirstName = rentVM.Guest.FirstName,
                 LastName = rentVM.Guest.LastName,
-                PhoneNumber = rentVM.Guest.PhoneNumber
+                PhoneNumber = rentVM.Guest.PhoneNumber,
+                IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
             };
 
             if (ModelState.IsValid)
@@ -241,6 +242,7 @@ namespace SurfsUp.Controllers
                     
                     //post as json.
                     var jsonPost = await _httpClient.PostAsJsonAsync("v2/rent", rentDto);
+
                 }
                 catch (Exception ex)
                 {
@@ -249,7 +251,7 @@ namespace SurfsUp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(rentDto);
+            return View(rentVM);
         }
 
         private bool BoardExists(int id)
