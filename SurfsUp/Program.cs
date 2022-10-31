@@ -22,6 +22,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<SurfsUpIdentityContext>();
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddAuthentication()
     .AddFacebook(options =>
     {

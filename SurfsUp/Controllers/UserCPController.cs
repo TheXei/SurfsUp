@@ -20,14 +20,15 @@ namespace SurfsUp.Controllers
         private readonly SurfsUpIdentityContext _identityContext;
         private readonly HttpClient _httpClient;
 
-        public UserCPController(SurfsUpContext context, SurfsUpIdentityContext identityContext)
+        public UserCPController(SurfsUpContext context, SurfsUpIdentityContext identityContext, HttpClient httpClient)
         {
             _context = context;
             _identityContext = identityContext;
-            _httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri("https://localhost:7277/api/v1.0/")
-            };
+            //_httpClient = new HttpClient()
+            //{
+            //    BaseAddress = new Uri("https://localhost:7277/api/v1.0/")
+            //};
+            _httpClient = httpClient;
         }
 
         // GET: UserCP
@@ -37,7 +38,7 @@ namespace SurfsUp.Controllers
             //var currentUser = _userManager.FindByNameAsync(User.Identity.Name.ToUpper()).GetAwaiter().GetResult();
             //var rents = _context.Rent.Where(r => r.ApplicationUserId == currentUser.Id).Include(r => r.Board).Distinct();
 
-            var rents = await _httpClient.GetFromJsonAsync<List<RentDto>>($"Rents/{User.Identity.Name}");
+            var rents = await _httpClient.GetFromJsonAsync<List<RentDto>>($"v1.0/Rents/{User.Identity.Name}");
 
             return View(rents);
         }
