@@ -66,9 +66,14 @@ namespace SurfsUp.Controllers
             {
                 search = currentFilter;
             }
+            string request = $"v1/boards/?search={search}&type={type}";
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                request = $"v2/boards/?search={search}&type={type}";
+            }
             bool premium = User.Identity.IsAuthenticated;
 
-            string request = $"v2/boards/{premium}?search={search}&type={type}";
             var jsonString = GetAsync(request).Result;
             var boards = JsonConvert.DeserializeObject<List<Board>>(jsonString);
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SurfsUp.Data;
 using System.Threading.Tasks;
@@ -40,7 +41,11 @@ namespace SurfsUp
                                 var rents = _context.Rent.Where(rent => rent.GuestId == guest.Id && rent.EndRent > DateTime.Now);
 
                                 if (rents.Count() > 1)
-                                    path = "https://localhost:7046/BoardsUser";
+                                {
+                                    httpContext.Request.Path = "/BoardsUser";
+                                    httpContext.Response.Redirect("/BoardsUser");
+                                    //return;
+                                }
                             }
 
                         }

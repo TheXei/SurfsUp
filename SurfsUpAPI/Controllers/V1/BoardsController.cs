@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
 
-namespace SurfsUpAPI.Controllers.V2
+namespace SurfsUpAPI.Controllers.V1
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
-    [ApiVersion("2.0")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class BoardsController : ControllerBase
     {
         private readonly SurfsUpContext _context;
@@ -53,7 +53,7 @@ namespace SurfsUpAPI.Controllers.V2
                 };
             };
 
-            return boards.Take(Math.Min(boards.Count(),6)).ToList();
-        }   
+            return boards.ToList();
+        }
     }
 }
