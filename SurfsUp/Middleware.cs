@@ -46,7 +46,7 @@ namespace SurfsUp
                         }
                         catch (Exception ex)
                         {
-                            //WriteColor("fuck me...");
+                            
                         }
                     }
 
