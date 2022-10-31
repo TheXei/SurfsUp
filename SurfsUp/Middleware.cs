@@ -40,7 +40,7 @@ namespace SurfsUp
                                 var rents = _context.Rent.Where(rent => rent.GuestId == guest.Id && rent.EndRent > DateTime.Now);
 
                                 if (rents.Count() > 1)
-                                    return;
+                                    path = "https://localhost:7046/BoardsUser";
                             }
 
                         }
