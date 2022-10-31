@@ -19,7 +19,7 @@ namespace SurfsUp.Controllers
         private readonly SurfsUpIdentityContext _identityContext;
         private readonly HttpClient _httpClient;
 
-        public BoardsUserController(SurfsUpContext context, SurfsUpIdentityContext identityContext, HttpClient httpClient)
+        public BoardsUserController(SurfsUpContext context, SurfsUpIdentityContext identityContext, IHttpClientFactory httpClientFactory)
         {
             _context = context;
             _identityContext = identityContext;
@@ -27,9 +27,8 @@ namespace SurfsUp.Controllers
             //{
             //    BaseAddress = new Uri("https://localhost:7277/api/")
             //};
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7277/api/");
-            Console.WriteLine("Base address is" + httpClient.BaseAddress);
+            _httpClient = httpClientFactory.CreateClient("api");
+            Console.WriteLine("Base address is" + _httpClient.BaseAddress);
         }
 
         async Task<string> GetAsync(string call)

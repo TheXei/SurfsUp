@@ -20,7 +20,7 @@ namespace SurfsUp.Controllers
         private readonly SurfsUpIdentityContext _identityContext;
         private readonly HttpClient _httpClient;
 
-        public UserCPController(SurfsUpContext context, SurfsUpIdentityContext identityContext, HttpClient httpClient)
+        public UserCPController(SurfsUpContext context, SurfsUpIdentityContext identityContext, IHttpClientFactory httpClientFactory)
         {
             _context = context;
             _identityContext = identityContext;
@@ -28,7 +28,7 @@ namespace SurfsUp.Controllers
             //{
             //    BaseAddress = new Uri("https://localhost:7277/api/v1.0/")
             //};
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         // GET: UserCP
