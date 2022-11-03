@@ -72,7 +72,7 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.GuestMiddleware();
+app.UseIPRateLimiting();
 app.UseRouting();
 
 
