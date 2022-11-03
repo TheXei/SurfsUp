@@ -29,7 +29,6 @@ namespace SurfsUp.Controllers
             //};
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7277/api/");
-            Console.WriteLine("Base address is" + httpClient.BaseAddress);
         }
 
         async Task<string> GetAsync(string call)

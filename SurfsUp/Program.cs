@@ -12,10 +12,10 @@ using SurfsUp;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfsUpContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpContext") ?? throw new InvalidOperationException("Connection string 'SurfsUpContext' not found."), b => b.MigrationsAssembly("SurfsUp")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpContext") ?? throw new InvalidOperationException("Connection string 'SurfsUpContext' not found."), b => b.MigrationsAssembly("Data")));
 
 builder.Services.AddDbContext<SurfsUpIdentityContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpIdentityContextConnection") ?? throw new InvalidOperationException("Connection string 'SurfsUpIdentityContext' not found."), b => b.MigrationsAssembly("SurfsUp")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpIdentityContextConnection") ?? throw new InvalidOperationException("Connection string 'SurfsUpIdentityContext' not found."), b => b.MigrationsAssembly("Data")));
 
 /* Adding the Identity framework to the project. */
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)

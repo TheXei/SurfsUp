@@ -102,7 +102,7 @@ namespace SurfsUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL,Premium")] Board board, IFormFile? file)
+        public async Task<IActionResult> Create([Bind("Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -149,7 +149,7 @@ namespace SurfsUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL,Premium")] Board board, byte[] rowVersion)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board, byte[] rowVersion)
         {
             if (id != board.Id)
             {
@@ -173,7 +173,7 @@ namespace SurfsUp.Controllers
             if (await TryUpdateModelAsync<Board>(
                 boardToUpdate,
                 "",
-                s => s.Name, s => s.Price, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Equipments, s => s.Premium, s => s.ImageURL))
+                s => s.Name, s => s.Price, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Equipments, s => s.ImageURL))
             {
                 try
                 {
@@ -225,10 +225,6 @@ namespace SurfsUp.Controllers
                         if (databaseValues.Equipments != clientValues.Equipments)
                         {
                             ModelState.AddModelError("Equipments", $"Current value: {databaseValues.Equipments}");
-                        }
-                        if (databaseValues.Premium != clientValues.Premium)
-                        {
-                            ModelState.AddModelError("Premium", $"Current value: {databaseValues.Premium}");
                         }
                         if (databaseValues.ImageURL != clientValues.ImageURL)
                         {

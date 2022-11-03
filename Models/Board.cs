@@ -62,9 +62,6 @@ namespace SurfsUp.Models
 
         [ValidateNever]
         public string? ImageURL { get; set; }
-
-        public bool Premium { get; set; }
-
         public virtual Rent? Rent { get; set; }
 
         [Timestamp]

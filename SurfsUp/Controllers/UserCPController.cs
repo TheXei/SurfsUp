@@ -29,6 +29,7 @@ namespace SurfsUp.Controllers
             //    BaseAddress = new Uri("https://localhost:7277/api/v1.0/")
             //};
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:7277/api/v1.0/");
         }
 
         // GET: UserCP

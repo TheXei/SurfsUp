@@ -29,7 +29,7 @@ namespace UnitTesting
             List<Board> premiumList, guestList;
 
             premiumList = JsonConvert.DeserializeObject<List<Board>>(GetAsync($"v2/boards/{true}", api).Result);
-            bool hasPremiumBoards = premiumList.Any(b => b.Premium == true);
+            bool hasPremiumBoards;
             // mangler post board i api
             //if(!hasPremiumBoards)
             //{
@@ -48,7 +48,7 @@ namespace UnitTesting
             //    api.PostAsync(, board);
             //}
             guestList = JsonConvert.DeserializeObject<List<Board>>(GetAsync($"v2/Boards/{false}?", api).Result);
-            Assert.IsTrue(guestList.All(b => b.Premium == false));
+            hasPremiumBoards = guestList.Count < premiumList.Count; 
             if (hasPremiumBoards)
                 Assert.AreNotEqual(premiumList, guestList);
             else
