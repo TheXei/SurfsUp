@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SurfsUp.Data;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace SurfsUp
+namespace SurfsUp.Utility
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class Middleware
