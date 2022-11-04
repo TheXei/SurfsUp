@@ -1,0 +1,83 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Text.Json
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<input type="text" @bind="SearchString" @bind:event="oninput"/>
+<button @onclick="Search">Search</button>
+
+@if (forecast == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Country: @city.country</p>
+    <p>Population: @city.population</p>
+    <p>Name: @city.name</p>
+    <p>Coord: @city.coord</p>
+    <p>Timezone: @city.timezone</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecast)
+            {
+                <tr>
+                    <td>@forecast.Date</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string SearchString { get; set; } = String.Empty;
+    private City city;
+    private WeatherForecast[] forecast;
+    private async Task Search()
+    {
+        var response = await Http.GetAsync($"forecast?q={SearchString}&units=metric&appid=c80a3333c44ae99b759212a5d1903600");
+
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            return;
+
+        Root root = JsonSerializer.Deserialize<Root>(response.Content.ReadAsStringAsync().Result);
+
+        if (root.list == null || root.city == null)
+            return;
+
+        forecast = root.list.Select(i => new WeatherForecast() { Date = DateTime.Parse(i.dt_txt), TemperatureC = (int)i.main.temp, Summary = i.weather[0].description }).ToArray();
+        city = root.city;
+        StateHasChanged();
+    }
+
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string? Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
