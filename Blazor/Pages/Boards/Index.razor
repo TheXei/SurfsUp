@@ -18,7 +18,7 @@
                 @foreach (PropertyInfo propertyInfo in typeof(Board).GetProperties())
                 {
                     var propName = propertyInfo.Name.ToLower();
-                    List<string> Hide = new List<string>() { "id", "imageurl", "rent" };
+                    List<string> Hide = new List<string>() { "id", "imageurl", "rent", "rowversion", "lockdate" };
                     if (!Hide.Any(s => propName.Contains(s)))
                     {
                         <option value="@propName">@propertyInfo.Name</option>
@@ -87,34 +87,23 @@
     var nextDisabled = !Boards.HasNextPage ? "disabled" : "";
 }
 
-@*<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+<button asp-action="Index"
+   @onclick="async () => { PageNumber--; await Search(); }"
    class="btn btn-default @prevDisabled">
     Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+</button>
+<button asp-action="Index"
+   @onclick="async () => { PageNumber++; await Search(); }"
    class="btn btn-default @nextDisabled">
     Next
-</a>*@
+</button>
 
 @code
 {
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Search("","",0,"",false);
-    }
-
-    async Task<string> GetAsync(string call)
-    {
-        using HttpResponseMessage response = await Http.GetAsync(call);
-
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
+        Search();
+        base.OnInitialized();
     }
 
     [Parameter]
@@ -124,43 +113,28 @@
     [Parameter]
     public string Locked { get; set; } = string.Empty;
     [Parameter]
-    public bool IsAuthenticated { get; set; } = false;
+    public int PageNumber { get; set; } = 1;
 
-    public async Task Search(string currentFilter,
-                                                string search,
-                                                int? pageNumber,
-                                                string type,
-                                                bool rentError)
+    public async Task Search()
     {
-        CurrentFilter = search;
-        Type = type;
-
-        if (rentError)
-            Locked = "Someone else is currently renting this Board. Please try again later.";
-
-        if (search != null)
+        if (CurrentFilter != null)
         {
-            pageNumber = 1;
+            PageNumber = 1;
         }
-        else
-        {
-            search = currentFilter;
-        }
-        string request = $"v1/boards/?search={search}&type={type}";
 
-        if (!IsAuthenticated)
-        {
-            request = $"v2/boards/?search={search}&type={type}";
-        }
-        //bool premium = IsAuthenticated;
+        string request = $"v1/boards/?search={CurrentFilter}&type={Type}";
 
-        var jsonString = GetAsync(request).Result;
-        var boards = JsonConvert.DeserializeObject<List<Board>>(jsonString);
+        var response = await Http.GetAsync(request);
+
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            return;
+
+        var boards = JsonConvert.DeserializeObject<List<Board>>(response.Content.ReadAsStringAsync().Result);
 
         int pageSize = 8;
-        boards = await PaginatedList<Board>.CreateAsync(boards, pageNumber ?? 1, pageSize);
+        Boards = PaginatedList<Board>.Create(boards, PageNumber, pageSize);
         StateHasChanged();
     }
 
-    private PaginatedList<SurfsUp.Models.Board> Boards = PaginatedList<Board>.CreateAsync(new List<Board>(), 0, 0 ).Result;
+    private PaginatedList<SurfsUp.Models.Board> Boards = PaginatedList<Board>.Create(new List<Board>(), 0, 0 );
 }

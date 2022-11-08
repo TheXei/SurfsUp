@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,17 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
 
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("blazor-wasm",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -91,6 +104,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseCors("blazor-wasm");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
