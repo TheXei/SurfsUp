@@ -1,5 +1,7 @@
 ﻿@page "/boards"
+@inject HttpClient Http
 @using System.Reflection
+@using Newtonsoft.Json
 @using SurfsUp.Utility
 @using SurfsUp.Models
 
@@ -85,22 +87,80 @@
     var nextDisabled = !Boards.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
-@*   asp-route-sortOrder="@ViewData["CurrentSort"]"
+@*<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"*@
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
-@*   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"*@
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @nextDisabled">
     Next
-</a>
+</a>*@
 
 @code
 {
-    private PaginatedList<SurfsUp.Models.Board> Boards;
+    protected override async Task OnInitializedAsync()
+    {
+        await Search("","",0,"",false);
+    }
+
+    async Task<string> GetAsync(string call)
+    {
+        using HttpResponseMessage response = await Http.GetAsync(call);
+
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    [Parameter]
+    public string CurrentFilter { get; set; } = string.Empty;
+    [Parameter]
+    public string Type { get; set; } = string.Empty;
+    [Parameter]
+    public string Locked { get; set; } = string.Empty;
+    [Parameter]
+    public bool IsAuthenticated { get; set; } = false;
+
+    public async Task Search(string currentFilter,
+                                                string search,
+                                                int? pageNumber,
+                                                string type,
+                                                bool rentError)
+    {
+        CurrentFilter = search;
+        Type = type;
+
+        if (rentError)
+            Locked = "Someone else is currently renting this Board. Please try again later.";
+
+        if (search != null)
+        {
+            pageNumber = 1;
+        }
+        else
+        {
+            search = currentFilter;
+        }
+        string request = $"v1/boards/?search={search}&type={type}";
+
+        if (!IsAuthenticated)
+        {
+            request = $"v2/boards/?search={search}&type={type}";
+        }
+        //bool premium = IsAuthenticated;
+
+        var jsonString = GetAsync(request).Result;
+        var boards = JsonConvert.DeserializeObject<List<Board>>(jsonString);
+
+        int pageSize = 8;
+        boards = await PaginatedList<Board>.CreateAsync(boards, pageNumber ?? 1, pageSize);
+        StateHasChanged();
+    }
+
+    private PaginatedList<SurfsUp.Models.Board> Boards = PaginatedList<Board>.CreateAsync(new List<Board>(), 0, 0 ).Result;
 }

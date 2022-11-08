@@ -48,7 +48,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<ITagHelperComponent, LocalizationValidationScriptsTagHelperComponent>();
 /* Adding the `IEmailSender` interface to the project. */
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
+//builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages();
 var cultureInfo = new CultureInfo("da-DK");
 cultureInfo.NumberFormat.CurrencyDecimalSeparator = ",";
