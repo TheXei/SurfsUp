@@ -14,5 +14,6 @@ namespace SurfsUp.Models
         public string PostalCode { get; set; }
 
         public ICollection<Rent> Rents { get; set; }
+        
     }
 }
