@@ -10,6 +10,7 @@ using System.Net.Http.Json;
 using Models.DTOs;
 using Newtonsoft.Json;
 using System.Drawing.Text;
+using SurfsUp.Utility;
 
 namespace SurfsUp.Controllers
 {
