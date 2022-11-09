@@ -88,11 +88,11 @@
     var nextDisabled = !Boards.HasNextPage ? "disabled" : "";
 }
 
-<button @onclick="async () => { PageNumber--; await Search(); Console.WriteLine('P'); }"
+<button @onclick="async () => { PageNumber--; await Search();   }"
         class="btn btn-default @prevDisabled">
     Previous
 </button>
-<button @onclick="async () => { PageNumber++; await Search(); Console.WriteLine('N'); }"
+<button @onclick="async () => { PageNumber++; await Search();}"
         class="btn btn-default @nextDisabled">
     Next
 </button>

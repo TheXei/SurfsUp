@@ -1,5 +1,32 @@
-﻿<h3>Index</h3>
+﻿<h1>Your Rents</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               @*@Html.DisplayNameFor(model => model.StartRent)*@
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.EndRent)*@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Rents)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.StartRent)*@
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.EndRent)*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
-
+    private IEnumerable<Models.RentDto> Rents { get; set; }
 }
