@@ -39,6 +39,17 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("blazor",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7070");
+        });
+});
+
+builder.Services.AddHttpClient();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

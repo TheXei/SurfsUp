@@ -16,7 +16,7 @@ namespace SurfsUp.Utility
         private Dictionary<IPAddress, List<DateTime>> _loggedRequests;
         //private readonly ILogger _logger;
         private RequestDelegate _next;
-        public int RequestLimit { get; set; } = 3;
+        public int RequestLimit { get; set; } = 5;
         public TimeSpan LimitPeriod { get; set; } = new(0, minutes: 3, 0);
 
         public IPLimiter(RequestDelegate next)
@@ -28,7 +28,7 @@ namespace SurfsUp.Utility
         public async Task InvokeAsync(HttpContext context)
         {
             string path = context.Request.Path;
-            if (path.StartsWith("/BoardsUser/GuestRentOut/"))
+            if (path.ToLower().StartsWith("/BoardsUser/GuestRentOut/".ToLower()))
             {
                 IPAddress clientAddress = context.Connection.RemoteIpAddress;
                 DateTime timeStamp = DateTime.Now;

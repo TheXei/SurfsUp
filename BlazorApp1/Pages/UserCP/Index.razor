@@ -1,0 +1,68 @@
+﻿@page "/usercp"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@using SurfsUp.Utility
+@using SurfsUp.Models
+@using Newtonsoft.Json
+<h1>Your Rents</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @*@Html.DisplayNameFor(model => model.StartRent)*@
+                <p>Start</p>
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.EndRent)*@
+                <p>End</p>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Rents)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.StartRent)*@
+                    <p>@item.StartRent</p>
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.EndRent)*@
+                    <p>@item.EndRent</p>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Models.RentDto> Rents { get; set; } = new();
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        string request = $"v1/rents/{user.Identity.Name}";
+
+        var response = await Http.GetAsync(request);
+
+        var rents = JsonConvert.DeserializeObject<List<Models.RentDto>>(response.Content.ReadAsStringAsync().Result);
+        if (rents != null)
+            Rents = rents;
+
+        StateHasChanged();
+        base.OnInitialized();
+    }
+}

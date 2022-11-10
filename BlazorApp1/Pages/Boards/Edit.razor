@@ -1,0 +1,84 @@
+﻿@page "/boards/edit/{BoardId:int}"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Newtonsoft.Json
+@using SurfsUp.Utility
+@using SurfsUp.Models
+
+<EditForm Model="@board" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>@nameof(board.Name).ToString()</p>
+    <InputText id="name" @bind-Value="board.Name" />
+
+    <p>@nameof(board.Price).ToString()</p>
+    <InputNumber id="price" @bind-Value="board.Price" />
+
+    <p>@nameof(board.Equipments).ToString()</p>
+    <InputText id="equipments" @bind-Value="board.Equipments" />
+
+    <p>@nameof(board.Thickness).ToString()</p>
+    <InputNumber id="thickness" @bind-Value="board.Thickness" />
+
+    <p>@nameof(board.Length).ToString()</p>
+    <InputNumber id="length" @bind-Value="board.Length" />
+
+    <p>@nameof(board.ImageURL).ToString()</p>
+    <InputText id="image" @bind-Value="board.ImageURL" />
+
+    <p>@nameof(board.Width).ToString()</p>
+    <InputNumber id="width" @bind-Value="board.Width" />
+
+    <p>@nameof(board.Volume).ToString()</p>
+    <InputNumber id="volume" @bind-Value="board.Volume" />
+
+    <p>@nameof(board.Type).ToString()</p>
+    <InputSelect id="type" @bind-Value="board.Type">
+        @foreach (var t in Enum.GetValues(typeof(BoardType)))
+        {
+            <option value=@t>@t</option>
+        }
+    </InputSelect>
+    <p></p>
+
+    <button type="submit">Edit</button>
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+    private Board board = new();
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (/*!user.IsInRole(StaticDetails.Role_User_Admin*/!user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+        string request = $"v2/board/{BoardId}";
+
+        var response = await Http.GetAsync(request);
+
+        Board b = JsonConvert.DeserializeObject<Board>(response.Content.ReadAsStringAsync().Result);
+        if (b != null)
+            board = b;
+
+        StateHasChanged();
+        base.OnInitialized();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        string request = $"v1/board/{BoardId}";
+        await Http.PostAsJsonAsync(request, board);
+        Navigation.NavigateTo("/boards");
+    }
+}

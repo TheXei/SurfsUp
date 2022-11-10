@@ -20,7 +20,7 @@ namespace SurfsUpAPI.Controllers.V1
             _identityContext = identityContext;
         }
         [HttpGet("")]
-        public async Task<ActionResult<List<Board>>> Index(string? type, string? search)
+        public async Task<ActionResult<List<Board>>> Index(string? type, string? search, bool? withRent)
 
         {
             var boards = from m in _context.Board
@@ -32,8 +32,10 @@ namespace SurfsUpAPI.Controllers.V1
             {
                 await _context.SaveChangesAsync();
             }
-
-            boards = boards.Where(board => board.Rent == null);
+            if (withRent != true)
+            {
+                boards = boards.Where(board => board.Rent == null);
+            }
 
             if (!String.IsNullOrEmpty(search))
                 boards = from b in boards where b.Name.ToLower()!.Contains(search.ToLower()) select b;
