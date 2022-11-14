@@ -8,7 +8,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
 
-<Modal></Modal>
+<Modal Board=@selectedBoard @ref="RentModal"></Modal>
 
 <div style="display:flex; justify-content:space-between; align-items:center;">
     <h1>Board For Rent</h1>
@@ -73,12 +73,12 @@
                                     int timeLeft = 300000 - (int)isTimerOver.TotalMilliseconds;
                                     if (isTimerOver.TotalMinutes > 5)
                                     {
-                                        <a @onclick="() => RentOut(item.Id)" class="nav-link text-light bg-dark">Rent</a>
+                                        <button @onclick="() => RentOut(item)" class="btn btn-dark text-light bg-dark btn-block">Rent</button>
                                     }
                                     else
                                     {
                                         var uid = Guid.NewGuid().ToString("n");
-                                        <a id="rent-btn-Hidden-@uid" @onclick="() => RentOut(item.Id)" class="nav-link text-light bg-dark rentHidden">Rent</a>
+                                        <a id="rent-btn-Hidden-@uid" @onclick="() => RentOut(item)" class="nav-link text-light bg-dark rentHidden">Rent</a>
                                         <div name="@timeLeft" id="loading-group-@uid" class="rentLoading">
                                             <div class="spinner-square">
                                                 <div class="square-1 square"></div>
@@ -124,6 +124,8 @@
     public bool IsAuthenticated { get; set; } = false;
     [Parameter]
     public int PageNumber { get; set; } = 1;
+    private Board selectedBoard = new();
+    private Modal RentModal = new();
 
     private PaginatedList<SurfsUp.Models.Board> Boards = PaginatedList<Board>.Create(new List<Board>(), 0, 0);
 }
@@ -158,11 +160,13 @@
         StateHasChanged();
     }
 
-    public void RentOut(int selectedBoard) {
-        if(IsAuthenticated) {
-            Navigation.NavigateTo($"boardsuser/rentout/{selectedBoard}");
-            return;
-        }
-        Navigation.NavigateTo($"boardsuser/guestrentout/{selectedBoard}");
+    public void RentOut(Board selectedBoard) {
+        //if(IsAuthenticated) {
+        //    Navigation.NavigateTo($"boardsuser/rentout/{selectedBoard}");
+        //    return;
+        //}
+        //Navigation.NavigateTo($"boardsuser/guestrentout/{selectedBoard}");
+        this.selectedBoard = selectedBoard;
+        RentModal.Open();
     }
 }

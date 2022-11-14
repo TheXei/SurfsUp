@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@*<PageTitle>View</PageTitle>
+
+<h1>View</h1>
+
+<h4>Rent</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">*@
+<EditForm Model="@rent" id="RentOut" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <p>@nameof(rent.StartRent).ToString()</p>
+            <InputDate id="name" @bind-Value="rent.StartRent" />
+
+            <p>@nameof(rent.EndRent).ToString()</p>
+            <InputDate id="name" @bind-Value="rent.EndRent" />
+            <p></p>
+
+            @*<button type="submit">Rent</button>*@
+        </EditForm>
+    @*</div>
+    <div class="col-md-4">
+        <FetchData SearchString="Odense" />
+    </div>
+</div>*@
+
+@*@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }*@
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+    private Models.RentDto rent { get; set; } = new() { StartRent = DateTime.Now, EndRent = DateTime.Now.AddDays(7)};
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (!user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        rent.BoardId = BoardId;
+        rent.UserName = user.Identity.Name;
+        StateHasChanged();
+        base.OnInitialized();
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        string request = $"v1/rent/";
+        await Http.PostAsJsonAsync(request, rent);
+        Navigation.NavigateTo("/boardsuser");
+    }
+}
+
