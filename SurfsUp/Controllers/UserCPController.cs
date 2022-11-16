@@ -39,7 +39,7 @@ namespace SurfsUp.Controllers
             //var currentUser = _userManager.FindByNameAsync(User.Identity.Name.ToUpper()).GetAwaiter().GetResult();
             //var rents = _context.Rent.Where(r => r.ApplicationUserId == currentUser.Id).Include(r => r.Board).Distinct();
 
-            var rents = await _httpClient.GetFromJsonAsync<List<RentDto>>($"v1.0/Rents/{User.Identity.Name}");
+            var rents = await _httpClient.GetFromJsonAsync<List<RentDto>>($"v1.0/Rents/{User.Identity.}");
 
             return View(rents);
         }

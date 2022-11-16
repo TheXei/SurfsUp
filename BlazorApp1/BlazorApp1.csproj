@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\BoardsUser\Modal.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.10" />
@@ -43,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\Component\Modal.razor" />
+    <None Include="Pages\BoardsUser\Modal.razor" />
   </ItemGroup>
 
 </Project>

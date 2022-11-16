@@ -5,6 +5,7 @@
 @using SurfsUp.Utility
 @using SurfsUp.Models
 @using Newtonsoft.Json
+@attribute [Authorize()]
 <h1>Your Rents</h1>
 
 <table class="table">
@@ -46,7 +47,7 @@
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        var user = authState.User;  
 
         if (!user.Identity.IsAuthenticated)
         {
@@ -55,6 +56,7 @@
         }
 
         string request = $"v1/rents/{user.Identity.Name}";
+        Console.WriteLine(user.Identity.Name);
 
         var response = await Http.GetAsync(request);
 

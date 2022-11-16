@@ -14,7 +14,7 @@
 <input type="text" @bind="SearchString" @bind:event="oninput"/>
 <input type="number" @bind="Days" @bind:event="oninput" />
 
-<button @onclick="Search">Search</button>
+<button @onclick="Search" class="btn btn-primary">Search</button>
 
 @if (forecast == null)
 {

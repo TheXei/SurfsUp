@@ -26,12 +26,12 @@ namespace SurfsUpAPI.Controllers.V1
         public async Task<ActionResult<List<RentDto>>> GetRents(string UserName)
         {
             var _userManager = new UserStore<ApplicationUser>(_identityContext);
-            var currentUser = _userManager.FindByNameAsync(UserName).GetAwaiter().GetResult();
+            var currentUser = await _userManager.FindByNameAsync(UserName);
+
+            if(currentUser == null)
+                return NotFound();
 
             var rent = _context.Rent.Where(b => b.ApplicationUserId == currentUser.Id);
-
-            if (rent == null)
-                return NotFound();
 
             List<RentDto> rentList = new List<RentDto>();
 

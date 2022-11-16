@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using SurfsUp.Models
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
@@ -11,18 +12,22 @@
 <div class="row">
     <div class="col-md-4">*@
 <EditForm Model="@rent" id="RentOut" OnValidSubmit="@HandleValidSubmit">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <p>@nameof(rent.StartRent).ToString()</p>
-            <InputDate id="name" @bind-Value="rent.StartRent" />
-
-            <p>@nameof(rent.EndRent).ToString()</p>
-            <InputDate id="name" @bind-Value="rent.EndRent" />
-            <p></p>
-
-            @*<button type="submit">Rent</button>*@
-        </EditForm>
-    @*</div>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="StartRent" class="control-label">@nameof(rent.StartRent).ToString()</label>
+        <InputDate @bind-Value="rent.StartRent" class="form-control" id="StartRent" />
+        <ValidationMessage For="() => rent.StartRent" />
+    </div>
+    <div class="form-group">
+        <label for="EndRent" class="control-label">@nameof(rent.EndRent).ToString()</label>
+        <InputDate @bind-Value="rent.EndRent" class="form-control" id="EndRent" />
+        <ValidationMessage For="() => rent.EndRent" />
+    </div>
+    <p></p>
+    @*<button type="submit">Rent</button>*@
+</EditForm>
+@*</div>
     <div class="col-md-4">
         <FetchData SearchString="Odense" />
     </div>
@@ -37,7 +42,7 @@
 @code {
     [Parameter]
     public int BoardId { get; set; }
-    private Models.RentDto rent { get; set; } = new() { StartRent = DateTime.Now, EndRent = DateTime.Now.AddDays(7)};
+    private Models.RentDto rent = new() { StartRent = DateTime.Now, EndRent = DateTime.Now.AddDays(7) };
     [Parameter]
     public EventCallback SuccesfulRent { get; set; }
 
@@ -60,7 +65,7 @@
     {
         rent.BoardId = BoardId;
         string request = $"v1/rent/";
-        await Http.PostAsJsonAsync(request, rent);
+        var response = await Http.PostAsJsonAsync(request, rent);
         SuccesfulRent.InvokeAsync();
         //Navigation.NavigateTo("/boardsuser");
     }

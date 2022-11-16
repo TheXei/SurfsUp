@@ -5,6 +5,7 @@
 @using Newtonsoft.Json
 @using SurfsUp.Utility
 @using SurfsUp.Models
+@attribute [Authorize()]
 <h3>Are you sure you want to delete this?</h3>
 <button value="Delete" class="btn btn-danger" @onclick="HandleValidSubmit">Delete</button>
 
@@ -21,14 +22,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (/*!user.IsInRole(StaticDetails.Role_User_Admin*/!user.Identity.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/");
-            return;
-        }
-
         base.OnInitialized();
     }
 }

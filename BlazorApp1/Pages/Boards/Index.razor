@@ -6,6 +6,7 @@
 @using SurfsUp.Models
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize()]
 
 
 
@@ -117,15 +118,6 @@
 @functions {
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (/*!user.IsInRole(StaticDetails.Role_User_Admin*/!user.Identity.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/");
-            return;
-        }
-
         Search();
         base.OnInitialized();
     }
