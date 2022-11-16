@@ -35,9 +35,9 @@
 @{
     if (!String.IsNullOrEmpty(Locked))
     {
-        <div class="alert alert-danger" role="alert">
-            <b>@Locked</b>
-        </div>
+    <div class="alert alert-danger" role="alert">
+                <b>@Locked</b>
+    </div>
     }
 }
 
@@ -73,20 +73,20 @@
                                     int timeLeft = 300000 - (int)isTimerOver.TotalMilliseconds;
                                     if (isTimerOver.TotalMinutes > 5)
                                     {
-                                        <button @onclick="() => RentOut(item)" class="btn btn-dark text-light bg-dark btn-block">Rent</button>
+                                            <button style="width:100%;" @onclick="() => RentOut(item)" class="btn btn-dark text-light bg-dark btn-block">Rent</button>
                                     }
                                     else
                                     {
                                         var uid = Guid.NewGuid().ToString("n");
-                                        <a id="rent-btn-Hidden-@uid" @onclick="() => RentOut(item)" class="nav-link text-light bg-dark rentHidden">Rent</a>
-                                        <div name="@timeLeft" id="loading-group-@uid" class="rentLoading">
-                                            <div class="spinner-square">
-                                                <div class="square-1 square"></div>
-                                                <div class="square-2 square"></div>
-                                                <div class="square-3 square"></div>
+                                            <a id="rent-btn-Hidden-@uid" @onclick="() => RentOut(item)" class="nav-link text-light bg-dark rentHidden">Rent</a>
+                                            <div name="@timeLeft" id="loading-group-@uid" class="rentLoading">
+                                                <div class="spinner-square">
+                                                    <div class="square-1 square"></div>
+                                                    <div class="square-2 square"></div>
+                                                    <div class="square-3 square"></div>
+                                                </div>
+                                                <p class="loading-text">Currently being rent...</p>
                                             </div>
-                                            <p class="loading-text">Currently being rent...</p>
-                                        </div>
                                     }
                                 }
                             </li>

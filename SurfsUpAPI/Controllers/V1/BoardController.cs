@@ -56,7 +56,6 @@ namespace SurfsUpAPI.Controllers.V1
 
 
                 await _context.SaveChangesAsync();
-                Console.WriteLine(board.Name);
                 return Ok(board);
             }
             return BadRequest();

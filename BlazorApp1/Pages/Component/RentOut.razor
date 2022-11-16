@@ -20,7 +20,7 @@
             <InputDate id="name" @bind-Value="rent.EndRent" />
             <p></p>
 
-            @*<button type="submit">Rent</button>*@
+            <button type="submit">Rent</button>
         </EditForm>
     @*</div>
     <div class="col-md-4">
@@ -59,7 +59,8 @@
     {
         string request = $"v1/rent/";
         await Http.PostAsJsonAsync(request, rent);
-        Navigation.NavigateTo("/boardsuser");
+        //Navigation.NavigateTo("/boardsuser");
+        Console.WriteLine("Vi lejer boardet :)");
     }
 }
 

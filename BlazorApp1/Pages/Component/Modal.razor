@@ -57,15 +57,6 @@
                
                 <div class="card-body">
                     <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
-@*                        <li class="nav-item">
-                            <button @onclick="() => Edit(item.Id)" class="nav-link text-light bg-dark">Edit</button>
-                        </li>
-                        <li class="nav-item">
-                            <button @onclick="() => Details(item.Id)" class="nav-link text-light bg-dark">Details</button>
-                        </li>
-                        <li class="nav-item">
-                            <button @onclick="() => Delete(item.Id)" class="nav-link text-light bg-dark">Delete</button>
-                        </li>*@
                     </ul>
                        @if(IsAuthenticated) {
                         <RentOut BoardId=@Board.Id @ref="rentOut"></RentOut>
