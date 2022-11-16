@@ -38,18 +38,19 @@
     [Parameter]
     public int BoardId { get; set; }
     private Models.RentDto rent { get; set; } = new() { StartRent = DateTime.Now, EndRent = DateTime.Now.AddDays(7)};
+    [Parameter]
+    public EventCallback SuccesfulRent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        if (!user.Identity.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/");
-            return;
-        }
+        //if (!user.Identity.IsAuthenticated)
+        //{
+        //    Navigation.NavigateTo("/");
+        //    return;
+        //}
 
-        rent.BoardId = BoardId;
         rent.UserName = user.Identity.Name;
         StateHasChanged();
         base.OnInitialized();
@@ -60,6 +61,7 @@
         rent.BoardId = BoardId;
         string request = $"v1/rent/";
         await Http.PostAsJsonAsync(request, rent);
+        SuccesfulRent.InvokeAsync();
         //Navigation.NavigateTo("/boardsuser");
     }
 }

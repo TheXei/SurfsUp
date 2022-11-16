@@ -48,12 +48,13 @@
     [Parameter]
     public int BoardId { get; set; }
     private Models.DTOs.GuestRentDto Rent { get; set; } = new();
+    [Parameter]
+    public EventCallback SuccesfulRent { get; set; }
 }
 
 @functions {
     protected override async Task OnInitializedAsync()
     {
-        Rent.BoardId = BoardId;
         Rent.StartRent = DateTime.Now;
         Rent.EndRent = Rent.StartRent.AddDays(7);
         StateHasChanged();
@@ -62,8 +63,10 @@
 
     public async Task HandleValidSubmit()
     {
+        Rent.BoardId = BoardId;
         string request = $"v2/rent/";
         await Http.PostAsJsonAsync(request, Rent);
-        Navigation.NavigateTo("/boardsuser");
+        SuccesfulRent.InvokeAsync();
+        //Navigation.NavigateTo("/boardsuser");
     }
 }

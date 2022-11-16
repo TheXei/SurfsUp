@@ -8,7 +8,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
 
-<Modal Board=@selectedBoard @ref="RentModal"></Modal>
+<Modal Board=@selectedBoard @ref="RentModal" OnClose="@Search"></Modal>
 
 <div style="display:flex; justify-content:space-between; align-items:center;">
     <h1>Board For Rent</h1>

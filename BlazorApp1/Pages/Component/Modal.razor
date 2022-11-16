@@ -59,10 +59,10 @@
                     <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
                     </ul>
                        @if(IsAuthenticated) {
-                        <RentOut BoardId=@Board.Id @ref="rentOut"></RentOut>
+                        <RentOut BoardId=@Board.Id @ref="rentOut" SuccesfulRent="@OnRented"></RentOut>
                     }
                     else {
-                        <GuestRentOut BoardId=@Board.Id @ref="guestRentOut"></GuestRentOut>
+                        <GuestRentOut BoardId=@Board.Id @ref="guestRentOut" SuccesfulRent="@OnRented"></GuestRentOut>
                     }
                 </div>
             </div>
@@ -91,7 +91,9 @@
     private RentOut rentOut = new();
     private String formName = String.Empty;
     bool IsAuthenticated => AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated; 
-         private Models.DTOs.GuestRentDto Rent { get; set; } = new();
+    private Models.DTOs.GuestRentDto Rent { get; set; } = new();
+    [Parameter]
+    public EventCallback OnClose { get; set; }
 
     public string ModalDisplay = "none;";
     public string ModalClass = "";
@@ -111,5 +113,11 @@
         ModalClass = "";
         ShowBackdrop = false;
         StateHasChanged();
+        OnClose.InvokeAsync();
     }
+
+    public void OnRented()
+    {
+        Close();
     }
+}
