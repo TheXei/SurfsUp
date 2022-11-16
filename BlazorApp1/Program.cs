@@ -21,7 +21,7 @@ builder.Services.AddDbContext<SurfsUpContext>(options =>
 builder.Services.AddDbContext<SurfsUpIdentityContext>(options =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Data")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>()
+builder.Services.AddDefaultIdentity<ApplicationUser>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<SurfsUpIdentityContext>();
 builder.Services.AddHttpClient();

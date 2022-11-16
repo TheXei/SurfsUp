@@ -61,7 +61,7 @@ namespace SurfsUpAPI.Controllers.V1
             if (!string.IsNullOrEmpty(rentDto.UserName))
             {
                 var _userManager = new UserStore<ApplicationUser>(_identityContext);
-                var currentUser = _userManager.FindByNameAsync(rentDto.UserName).GetAwaiter().GetResult();
+                var currentUser = await _userManager.FindByNameAsync(rentDto.UserName);
 
                 if (_context.ApplicationUser.Find(currentUser.Id) == null)
                     _context.Add(currentUser);
