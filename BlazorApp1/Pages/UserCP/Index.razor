@@ -56,8 +56,6 @@
         }
 
         string request = $"v1/rents/{user.Identity.Name}";
-        Console.WriteLine(user.Identity.Name);
-
         var response = await Http.GetAsync(request);
 
         var rents = JsonConvert.DeserializeObject<List<Models.RentDto>>(response.Content.ReadAsStringAsync().Result);
