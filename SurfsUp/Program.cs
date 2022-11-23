@@ -8,18 +8,21 @@ using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SurfsUp.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfsUpContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpContext") ?? throw new InvalidOperationException("Connection string 'SurfsUpContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpContext") ?? throw new InvalidOperationException("Connection string 'SurfsUpContext' not found."), b => b.MigrationsAssembly("Data")));
 
 builder.Services.AddDbContext<SurfsUpIdentityContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpIdentityContextConnection") ?? throw new InvalidOperationException("Connection string 'SurfsUpIdentityContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpIdentityContextConnection") ?? throw new InvalidOperationException("Connection string 'SurfsUpIdentityContext' not found."), b => b.MigrationsAssembly("Data")));
 
 /* Adding the Identity framework to the project. */
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<SurfsUpIdentityContext>();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddAuthentication()
     .AddFacebook(options =>
@@ -45,7 +48,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<ITagHelperComponent, LocalizationValidationScriptsTagHelperComponent>();
 /* Adding the `IEmailSender` interface to the project. */
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
+//builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages();
 var cultureInfo = new CultureInfo("da-DK");
 cultureInfo.NumberFormat.CurrencyDecimalSeparator = ",";
@@ -69,14 +72,13 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseIPRateLimiting();
 app.UseRouting();
 
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

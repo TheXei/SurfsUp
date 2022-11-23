@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
-using static System.Reflection.Metadata.BlobBuilder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Text.Json;
+using Models;
+using System.Text;
+using System.Net.Http.Json;
+using Models.DTOs;
+using Newtonsoft.Json;
+using System.Drawing.Text;
+using SurfsUp.Utility;
 
 namespace SurfsUp.Controllers
 {
@@ -22,11 +18,26 @@ namespace SurfsUp.Controllers
     {
         private readonly SurfsUpContext _context;
         private readonly SurfsUpIdentityContext _identityContext;
+        private readonly HttpClient _httpClient;
 
-        public BoardsUserController(SurfsUpContext context, SurfsUpIdentityContext identityContext)
+        public BoardsUserController(SurfsUpContext context, SurfsUpIdentityContext identityContext, HttpClient httpClient)
         {
             _context = context;
             _identityContext = identityContext;
+            //_httpClient = new HttpClient()
+            //{
+            //    BaseAddress = new Uri("https://localhost:7277/api/")
+            //};
+            _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:7277/api/");
+        }
+
+        async Task<string> GetAsync(string call)
+        {
+            using HttpResponseMessage response = await _httpClient.GetAsync(call);
+
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
         }
 
         //public Task SortAndSearch(IQueryable<Board> boardList, string type, string search)
@@ -46,10 +57,10 @@ namespace SurfsUp.Controllers
         {
             ViewData["CurrentFilter"] = search;
             ViewData["Type"] = type;
-            
+
             if (rentError)
                 ViewData["Locked"] = "Someone else is currently renting this Board. Please try again later.";
-            
+
             if (search != null)
             {
                 pageNumber = 1;
@@ -58,44 +69,19 @@ namespace SurfsUp.Controllers
             {
                 search = currentFilter;
             }
+            string request = $"v1/boards/?search={search}&type={type}";
 
-            var boards = from m in _context.Board
-                         select m;
-
-            boards = boards.Include(r => r.Rent);
-
-            await boards.Where(board => board.Rent != null && board.Rent.EndRent < DateTime.Now).ForEachAsync(board => board.Rent = null);
+            if (!User.Identity.IsAuthenticated)
             {
-                await _context.SaveChangesAsync();
+                request = $"v2/boards/?search={search}&type={type}";
             }
+            bool premium = User.Identity.IsAuthenticated;
 
-            boards = boards.Where(board => board.Rent == null);
-
-
-            /* Filtering the boards by the search string and then sorting them by the type. */
-            if (!String.IsNullOrEmpty(search))
-                boards = from b in boards where b.Name.ToLower()!.Contains(search.ToLower()) select b;
-
-            if (!String.IsNullOrEmpty(type))
-            {
-                //PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(Board)).Find("Length", true);
-                //var test2 = from b in _context.Board.ToList() orderby prop.GetValue(b) select b; //THIS WORKS
-                //ReturnedList = (from b in _context.Board.ToList() orderby prop.GetValue(b) select b).ToList(); ///Works too
-                boards = type.ToLower() switch
-                {
-                    "name" => from b in boards orderby b.Name select b,
-                    "length" => from b in boards orderby b.Length select b,
-                    "thickness" => from b in boards orderby b.Thickness select b,
-                    "volume" => from b in boards orderby b.Volume select b,
-                    "type" => from b in boards orderby b.Type select b,
-                    "price" => from b in boards orderby b.Price select b,
-                    "equipments" => from b in boards orderby b.Equipments select b,
-                    _ => from b in boards orderby b.Name select b,
-                };
-            }
+            var jsonString = GetAsync(request).Result;
+            var boards = JsonConvert.DeserializeObject<List<Board>>(jsonString);
 
             int pageSize = 8;
-            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Board>.CreateAsync(boards, pageNumber ?? 1, pageSize));
         }
 
         // GET: BoardsUser/Details/5
@@ -126,18 +112,26 @@ namespace SurfsUp.Controllers
             {
                 return NotFound();
             }
-            var boardToUpdate = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-            TimeSpan isTimerOver = DateTime.Now - boardToUpdate.LockDate;
+
+            //var boardRequest = await _httpClient.GetFromJsonAsync("Rents", id);
+            //var board = await JsonSerializer.DeserializeAsync<Board>(boardRequest);
+
+            var board = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (board == null)
+            {
+                return NotFound();
+            }
+            
+            TimeSpan isTimerOver = DateTime.Now - board.LockDate;
             if (isTimerOver.TotalMinutes < 5)
             {
                 return RedirectToAction(nameof(Index), new { @rentError = true });
             }
-            boardToUpdate.LockDate = DateTime.Now;
+            board.LockDate = DateTime.Now;
             await _context.SaveChangesAsync();
             var rent = new Rent();
             return View(rent);
-
-            
         }
 
         //POST METHOD
@@ -145,22 +139,18 @@ namespace SurfsUp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RentOut(int id, [Bind(include: "StartRent,EndRent")] Rent rent)
         {
-            if (!BoardExists(id))
+            //instansiere ny RentDto
+            RentDto rentDto = new RentDto()
             {
-                return NotFound();
-            }
+                BoardId = id,
+                StartRent = rent.StartRent,
+                EndRent = rent.EndRent
+            };
 
-            rent.BoardId = id;
-
+            //tilføjer bruger hvis logger ind
             if (User.Identity.IsAuthenticated)
             {
-                var _userManager = new UserStore<ApplicationUser>(_identityContext);
-                var currentUser = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
-
-                if (!_context.Rent.Any(r => r.ApplicationUserId == currentUser.Id))
-                    rent.ApplicationUser = currentUser;
-
-                rent.ApplicationUserId = currentUser.Id;
+                rentDto.UserName = User.Identity.Name;
             }
 
             if (rent.StartRent.AddMinutes(5) < DateTime.Now)
@@ -181,9 +171,8 @@ namespace SurfsUp.Controllers
             {
                 try
                 {
-                        
-                    _context.Add(rent);
-                    await _context.SaveChangesAsync();
+                    //post as json.
+                    var jsonPost = await _httpClient.PostAsJsonAsync("v1.0/rent", rentDto);
                 }
                 catch (Exception ex)
                 {
@@ -192,7 +181,85 @@ namespace SurfsUp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             
+            return View(rentDto);
+        }
+        public async Task<IActionResult> GuestRentOut(int? id)
+        {
+            if (id == null || _context.Board == null)
+            {
+                return NotFound();
+            }
+
+            var board = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (board == null)
+            {
+                return NotFound();
+            }
+
+            TimeSpan isTimerOver = DateTime.Now - board.LockDate;
+            if (isTimerOver.TotalMinutes < 5)
+            {
+                return RedirectToAction(nameof(Index), new { @rentError = true });
+            }
+            board.LockDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+            var rent = new GuestRentViewModel
+            {
+                Rent = new Rent(),
+                Guest = new Guest()
+            };
             return View(rent);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuestRentOut(int id, [Bind(include: "Rent, Guest")] GuestRentViewModel rentVM)
+        {
+            //instansiere ny RentDto
+            
+
+            if (rentVM.Rent.StartRent.AddMinutes(5) < DateTime.Now)
+            {
+                ModelState.AddModelError("StartRent", "Start date must not be sooner than now");
+            }
+            if (rentVM.Rent.EndRent > rentVM.Rent.StartRent.AddDays(30))
+            {
+                ModelState.AddModelError("StartRent", "You can only rent boards for 30 days maximum");
+            }
+
+            if (rentVM.Rent.StartRent > rentVM.Rent.EndRent)
+            {
+                ModelState.AddModelError("StartRent", "Start date must be before end date");
+            }
+            GuestRentDto rentDto = new GuestRentDto()
+            {
+                BoardId = id,
+                StartRent = rentVM.Rent.StartRent,
+                EndRent = rentVM.Rent.EndRent,
+                FirstName = rentVM.Guest.FirstName,
+                LastName = rentVM.Guest.LastName,
+                PhoneNumber = rentVM.Guest.PhoneNumber,
+                IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+            };
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    
+                    //post as json.
+                    var jsonPost = await _httpClient.PostAsJsonAsync("v2/rent", rentDto);
+
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(rentVM);
         }
 
         private bool BoardExists(int id)

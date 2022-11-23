@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using SurfsUp.Data;
 using SurfsUp.Models;
 
@@ -17,20 +18,30 @@ namespace SurfsUp.Controllers
     {
         private readonly SurfsUpContext _context;
         private readonly SurfsUpIdentityContext _identityContext;
+        private readonly HttpClient _httpClient;
 
-        public UserCPController(SurfsUpContext context, SurfsUpIdentityContext identityContext)
+        public UserCPController(SurfsUpContext context, SurfsUpIdentityContext identityContext, HttpClient httpClient)
         {
             _context = context;
             _identityContext = identityContext;
+            //_httpClient = new HttpClient()
+            //{
+            //    BaseAddress = new Uri("https://localhost:7277/api/v1.0/")
+            //};
+            _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:7277/api/v1.0/");
         }
 
         // GET: UserCP
         public async Task<IActionResult> Index()
         {
-            var _userManager = new UserStore<ApplicationUser>(_identityContext);
-            var currentUser = _userManager.FindByNameAsync(User.Identity.Name.ToUpper()).GetAwaiter().GetResult();
-            var rents = _context.Rent.Where(r => r.ApplicationUserId == currentUser.Id).Include(r => r.Board).Distinct();
-            return View(await rents.ToListAsync());
+            //var _userManager = new UserStore<ApplicationUser>(_identityContext);
+            //var currentUser = _userManager.FindByNameAsync(User.Identity.Name.ToUpper()).GetAwaiter().GetResult();
+            //var rents = _context.Rent.Where(r => r.ApplicationUserId == currentUser.Id).Include(r => r.Board).Distinct();
+
+            var rents = await _httpClient.GetFromJsonAsync<List<RentDto>>($"v1.0/Rents/{User.Identity.}");
+
+            return View(rents);
         }
 
         // GET: UserCP/Details/5

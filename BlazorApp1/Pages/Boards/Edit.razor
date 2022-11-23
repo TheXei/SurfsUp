@@ -1,0 +1,107 @@
+﻿@page "/boards/edit/{BoardId:int}"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Newtonsoft.Json
+@using SurfsUp.Utility
+@using SurfsUp.Models
+@attribute [Authorize()]
+
+
+<EditForm Model="@board" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="Name" class="control-label">@nameof(board.Name).ToString()</label>
+        <InputText @bind-Value="board.Name" class="form-control" id="Name"/>
+        <ValidationMessage For="() => board.Name" />
+    </div>
+    <div class="form-group">
+        <label for="Price" class="control-label">@nameof(board.Price).ToString()</label>
+        <InputNumber @bind-Value="board.Price" class="form-control" id="Price"/>
+        <ValidationMessage For="() => board.Price" />
+    </div>
+    <div class="form-group">
+        <label for="Equipments" class="control-label">@nameof(board.Equipments).ToString()</label>
+        <InputText @bind-Value="board.Equipments" class="form-control" id="Equipments"/>
+        <ValidationMessage For="() => board.Equipments" />
+    </div>
+
+    <div class="form-group">
+        <label for="Thickness" class="control-label">@nameof(board.Thickness).ToString()</label>
+        <InputNumber @bind-Value="board.Thickness" class="form-control" id="Thickness"/>
+        <ValidationMessage For="() => board.Thickness" />
+    </div>
+
+    <div class="form-group">
+        <label for="Length" class="control-label">@nameof(board.Length).ToString()</label>
+        <InputNumber @bind-Value="board.Length" class="form-control" id="Length"/>
+        <ValidationMessage For="() => board.Length" />
+    </div>
+
+    <div class="form-group">
+        <label for="Name" class="control-label">@nameof(board.ImageURL).ToString()</label>
+        <InputText @bind-Value="board.ImageURL" class="form-control" id="ImageURL"/>
+        <ValidationMessage For="() => board.ImageURL" />
+    </div>
+
+    <div class="form-group">
+        <label for="Width" class="control-label">@nameof(board.Width).ToString()</label>
+        <InputNumber @bind-Value="board.Width" class="form-control" id="Width"/>
+        <ValidationMessage For="() => board.Width" />
+    </div>
+
+    <div class="form-group">
+        <label for="Volume" class="control-label">@nameof(board.Volume).ToString()</label>
+        <InputNumber @bind-Value="board.Volume" class="form-control" id="Volume"/>
+        <ValidationMessage For="() => board.Volume" />
+    </div>
+
+    <div class="form-group">
+        <label for="Type" class="control-label">@nameof(board.Type).ToString()</label>
+        <InputSelect @bind-Value="board.Type" class="form-control" id="Type">
+            @foreach (var type in Enum.GetValues(typeof(BoardType)))
+            {
+                <option value=@type>@type</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="() => board.Type" />
+    </div>
+
+    <p></p>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+    private Board board = new();
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        string request = $"v2/board/{BoardId}";
+
+        var response = await Http.GetAsync(request);
+
+        Board b = JsonConvert.DeserializeObject<Board>(response.Content.ReadAsStringAsync().Result);
+        if (b != null)
+            board = b;
+
+        StateHasChanged();
+        base.OnInitialized();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        string request = $"v1/board/{BoardId}";
+        await Http.PostAsJsonAsync(request, board);
+        Navigation.NavigateTo("/boards");
+    }
+}

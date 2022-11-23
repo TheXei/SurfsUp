@@ -1,0 +1,172 @@
+﻿@page "/boardsuser"
+@inject HttpClient Http
+@using System.Reflection
+@using Newtonsoft.Json
+@using SurfsUp.Utility
+@using SurfsUp.Models
+@using Microsoft.AspNetCore.Components.Authorization  
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+<Modal Board=@selectedBoard @ref="RentModal" OnClose="@Search"></Modal>
+
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h1>Board For Rent</h1>
+    @*    <form asp-controller="Boards" onsubmit="@Search()">*@
+    <p style="margin:0;display:flex;">
+        <select class="me-2 form-control" @bind="Type">
+            <option value="">All Types</option>
+            @foreach (PropertyInfo propertyInfo in typeof(Board).GetProperties())
+            {
+                var propName = propertyInfo.Name.ToLower();
+                List<string> Hide = new List<string>() { "id", "imageurl", "rent", "rowversion", "lockdate" };
+                if (!Hide.Any(s => propName.Contains(s)))
+                {
+                    <option value="@propName">@propertyInfo.Name</option>
+                }
+            }
+        </select>
+        <input class="form-control" type="text" placeholder="Search Text" @bind="CurrentFilter" />
+        <button class="btnSearch btn btn-dark" @onclick="Search">Search</button>
+    </p>
+    @*    </form>*@
+</div>
+
+@{
+    if (!String.IsNullOrEmpty(Locked))
+    {
+    <div class="alert alert-danger" role="alert">
+                <b>@Locked</b>
+    </div>
+    }
+}
+
+<div class="row" style="display:flex;flex-wrap:wrap; padding:0!important;">
+    @foreach (var item in Boards)
+    {
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+            <div class="card" style="margin-top:15px;">
+                <a asp-action="Details" asp-route-id="@item.Id" class="text-dark" style="text-decoration:none;">
+                    <div class="card-header">
+                        <h5 class="card-title" style="margin:0!important;"><b>@item.Name</b></h5>
+                    </div>
+                    @*ANIMATION*@
+                    <div class="animation-div" style="height: 275px;overflow:hidden;">
+                        <img class="card-img-top img-fluid image-style" src="@item.ImageURL" alt="">
+                        <ul class="hidden-ul">
+                            <li class="item-style"><b>Length:</b> <pro style="float:right;">@item.Length feet</pro></li>
+                            <li class="item-style"><b>Thickness:</b> <pro style="float:right;">@item.Width inches</pro></li>
+                            <li class="item-style"><b>Volume:</b> <pro style="float:right;">@item.Volume inches</pro></li>
+                        </ul>
+                    </div>
+                </a>
+                @*NOT MOVING*@
+                <div>
+                    <ul class="price-ul">
+                        <li class="price-li"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
+                    </ul>
+                    <div class="card-body board-btn">
+                        <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
+                            <li class="nav-item" style="width:100%; text-align:center;">
+                                @{
+                                    TimeSpan isTimerOver = DateTime.Now - item.LockDate;
+                                    int timeLeft = 300000 - (int)isTimerOver.TotalMilliseconds;
+                                    if (isTimerOver.TotalMinutes > 5)
+                                    {
+                                            <button style="width:100%;" @onclick="() => RentOut(item)" class="btn btn-dark text-light bg-dark btn-block">Rent</button>
+                                    }
+                                    else
+                                    {
+                                        var uid = Guid.NewGuid().ToString("n");
+                                            <a id="rent-btn-Hidden-@uid" @onclick="() => RentOut(item)" class="nav-link text-light bg-dark rentHidden">Rent</a>
+                                            <div name="@timeLeft" id="loading-group-@uid" class="rentLoading">
+                                                <div class="spinner-square">
+                                                    <div class="square-1 square"></div>
+                                                    <div class="square-2 square"></div>
+                                                    <div class="square-3 square"></div>
+                                                </div>
+                                                <p class="loading-text">Currently being rent...</p>
+                                            </div>
+                                    }
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                @*NOT MOVING END*@
+            </div>
+        </div>
+    }
+</div>
+@{
+    var prevDisabled = !Boards.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Boards.HasNextPage ? "disabled" : "";
+}
+
+<button @onclick="async () => { PageNumber--; await Search();}"
+        class="btn btn-default @prevDisabled">
+    Previous
+</button>
+<button @onclick="async () => { PageNumber++; await Search();}"
+        class="btn btn-default @nextDisabled">
+    Next
+</button>
+
+@code
+{
+    [Parameter]
+    public string CurrentFilter { get; set; } = string.Empty;
+    [Parameter]
+    public string Type { get; set; } = string.Empty;
+    [Parameter]
+    public string Locked { get; set; } = string.Empty;
+    [Parameter]
+    public bool IsAuthenticated { get; set; } = false;
+    [Parameter]
+    public int PageNumber { get; set; } = 1;
+    private Board selectedBoard = new();
+    private Modal RentModal = new();
+
+    private PaginatedList<SurfsUp.Models.Board> Boards = PaginatedList<Board>.Create(new List<Board>(), 0, 0);
+}
+
+@functions {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        IsAuthenticated = user.Identity.IsAuthenticated;
+        Search();
+        base.OnInitialized();
+    }
+
+    public async Task Search()
+    {
+        string request = $"v1/boards/?search={CurrentFilter}&type={Type}";
+
+        if (IsAuthenticated == false)
+            request = $"v2/boards/?search={CurrentFilter}&type={Type}";
+
+        var response = await Http.GetAsync(request);
+
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            return;
+
+        var boards = JsonConvert.DeserializeObject<List<Board>>(response.Content.ReadAsStringAsync().Result);
+
+        int pageSize = 8;
+        Boards = PaginatedList<Board>.Create(boards, PageNumber, pageSize);
+        StateHasChanged();
+    }
+
+    public void RentOut(Board selectedBoard) {
+        //if(IsAuthenticated) {
+        //    Navigation.NavigateTo($"boardsuser/rentout/{selectedBoard}");
+        //    return;
+        //}
+        //Navigation.NavigateTo($"boardsuser/guestrentout/{selectedBoard}");
+        this.selectedBoard = selectedBoard;
+        RentModal.Open();
+    }
+}

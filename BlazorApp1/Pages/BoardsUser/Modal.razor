@@ -1,0 +1,122 @@
+﻿@inject HttpClient Http
+@using System.Reflection
+@using Newtonsoft.Json
+@using SurfsUp.Utility
+@using SurfsUp.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+@*<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick=@Open>
+    Rent
+</button>*@
+
+<!-- Modal -->
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Board.Name</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()"/>
+            </div>
+            <div class="modal-body">
+
+                @*                @foreach (var item in Boards)
+                { *@
+                <div class="col-xl-12 col-lg-4 col-md-12 col-sm-12">
+                    <div class="card" style="margin-top:15px;">
+                        <img style="height: 275px; margin:20px auto 20px auto;" class="card-img-top img-fluid" src="@Board.ImageURL" alt="">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Length:</b> <pro style="float:right;">@Board.Length feet</pro></li>
+                            <li class="list-group-item"><b>Width:</b> <pro style="float:right;">@Board.Width inches</pro></li>
+                            <li class="list-group-item"><b>Thickness:</b> <pro style="float:right;">@Board.Thickness inches</pro></li>
+                            <li class="list-group-item"><b>Volume:</b> <pro style="float:right;">@Board.Volume L</pro></li>
+                            <li class="list-group-item"><b>Type:</b> <pro style="float:right;">@Board.Type</pro></li>
+                            <li class="list-group-item">
+                                <b>Equipments: </b>
+                                <pro style="float:right;">
+                                    <div style="text-align:right;">
+                                        @if (!String.IsNullOrEmpty(Board.Equipments))
+                                            @foreach (var items in Board.Equipments.Split(','))
+                                            {
+                                                <p style="padding:0;margin:0;">@items</p>
+                                            }
+                                        else
+                                        {
+                                            <p style="padding:0;margin:0;">None</p>
+                                        }
+                                    </div>
+                                </pro>
+                            </li>
+                            <li class="list-group-item"><b>Price: </b><pro style="float:right;">@Board.Price €</pro></li>
+
+                        </ul>
+
+                        <div class="card-body">
+                            <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
+                            </ul>
+                            @if (IsAuthenticated)
+                            {
+                                <RentOut BoardId=@Board.Id @ref="rentOut" SuccesfulRent="@OnRented"></RentOut>
+                            }
+                            else
+                            {
+                                <GuestRentOut BoardId=@Board.Id @ref="guestRentOut" SuccesfulRent="@OnRented"></GuestRentOut>
+                            }
+                        </div>
+                    </div>
+                </div>
+                @* } *@
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="RentOut" class="btn btn-primary">Rent Board</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+<!-- END -->
+@code {
+    [Parameter]
+    public Board Board { get; set; } = new();
+    private GuestRentOut guestRentOut = new();
+    private RentOut rentOut = new();
+    private String formName = String.Empty;
+    bool IsAuthenticated => AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated;
+    private Models.DTOs.GuestRentDto Rent { get; set; } = new();
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+        OnClose.InvokeAsync();
+    }
+
+    public void OnRented()
+    {
+        Close();
+    }
+}
