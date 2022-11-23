@@ -5,8 +5,8 @@
 @using Newtonsoft.Json
 @using SurfsUp.Utility
 @using SurfsUp.Models
-@attribute [Authorize()]
-
+@*A way to restrict access to the controller to only users with the role of Admin.*@
+@attribute [Authorize(Roles = StaticDetails.Role_User_Admin)]
 
 <EditForm Model="@board" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />

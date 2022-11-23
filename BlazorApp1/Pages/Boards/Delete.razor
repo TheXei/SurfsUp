@@ -5,7 +5,8 @@
 @using Newtonsoft.Json
 @using SurfsUp.Utility
 @using SurfsUp.Models
-@attribute [Authorize()]
+@*A way to restrict access to the controller to only users with the role of Admin.*@
+@attribute [Authorize(Roles = StaticDetails.Role_User_Admin)]
 <h3>Are you sure you want to delete this?</h3>
 <button value="Delete" class="btn btn-danger" @onclick="HandleValidSubmit">Delete</button>
 

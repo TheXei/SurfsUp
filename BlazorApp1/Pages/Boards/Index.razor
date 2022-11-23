@@ -6,8 +6,8 @@
 @using SurfsUp.Models
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@attribute [Authorize()]
-
+@*A way to restrict access to the controller to only users with the role of Admin.*@
+@attribute [Authorize(Roles = StaticDetails.Role_User_Admin)]
 
 
 <h1>Board Manager</h1>
