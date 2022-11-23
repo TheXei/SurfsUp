@@ -1,0 +1,143 @@
+﻿@using System.Reflection
+@using SurfsUp.Utility
+@model PaginatedList<SurfsUp.Models.Board>
+
+@{
+    ViewData["Title"] = "Board Manager";
+}
+
+
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h1>Boards for Rent</h1>
+
+    <form asp-controller="BoardsUser" asp-action="Index" method="get">
+        <p style="margin:0;display:flex;">
+            <select class="me-2 form-control" name="type">
+                <option disabled selected hidden value="">Sort by</option>
+                @foreach (PropertyInfo propertyInfo in typeof(Board).GetProperties())
+                {
+                    var propName = propertyInfo.Name.ToLower();
+                    List<string> Hide = new List<string>() { "id", "imageurl", "rent" };
+                    if (!Hide.Any(s => propName.Contains(s)))
+                    {
+                        if (@ViewData["Type"] != null && @ViewData["Type"].ToString() == @propertyInfo.Name)
+                        {
+                            <option selected="@ViewData["Type"]" value="@propertyInfo.Name">@propertyInfo.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@propertyInfo.Name">@propertyInfo.Name</option>
+                        }
+                    }
+                }
+            </select>
+            <input class="form-control" type="text" name="search" placeholder="Search Text" value="@ViewData["CurrentFilter"]" />
+            <input class="btnSearch btn btn-dark" type="submit" value="Search" />
+        </p>
+    </form>
+</div>
+@{
+    if (ViewData["Locked"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <b>@ViewData["Locked"]</b>
+        </div>
+    }
+}
+<div class="row" style="display:flex;flex-wrap:wrap; padding:0!important;">
+    @foreach (var item in Model)
+    {
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+            <div class="card" style="margin-top:15px;">
+                <a asp-action="Details" asp-route-id="@item.Id" class="text-dark" style="text-decoration:none;">
+                    <div class="card-header">
+                        <h5 class="card-title" style="margin:0!important;"><b>@item.Name</b></h5>
+                    </div>
+                    @*ANIMATION*@
+                    <div class="animation-div" style="height: 275px;overflow:hidden;">
+                        <img class="card-img-top img-fluid image-style" src="@item.ImageURL" alt="">
+                        <ul class="hidden-ul">
+                            <li class="item-style"><b>Length:</b> <pro style="float:right;">@item.Length feet</pro></li>
+                            <li class="item-style"><b>Thickness:</b> <pro style="float:right;">@item.Width inches</pro></li>
+                            <li class="item-style"><b>Volume:</b> <pro style="float:right;">@item.Volume inches</pro></li>
+                        </ul>
+                    </div>
+                </a>
+                @*NOT MOVING*@
+                <div>
+                    <ul class="price-ul">
+                        <li class="price-li"><b>Price: </b><pro style="float:right;">@item.Price €</pro></li>
+                    </ul>
+                    <div class="card-body board-btn">
+                        <ul class="nav nav-pills card-header-pills" style="display: flex; justify-content:space-between;">
+                            <li class="nav-item" style="width:100%; text-align:center;">
+                                @{
+                                    TimeSpan isTimerOver = DateTime.Now - item.LockDate;
+                                    int timeLeft = 300000 - (int)isTimerOver.TotalMilliseconds;
+                                    if (isTimerOver.TotalMinutes > 5)
+                                    {
+                                        <a asp-action="@(User.Identity.IsAuthenticated ? "RentOut" : "GuestRentOut")" asp-route-id="@item.Id" class="nav-link text-light bg-dark">Rent</a>
+                                    }
+                                    else
+                                    {
+                                        var uid = Guid.NewGuid().ToString("n");
+                                        <a id="rent-btn-Hidden-@uid" asp-action="@(User.Identity.IsAuthenticated ? "RentOut" : "GuestRentOut")" asp-route-id="@item.Id" class="nav-link text-light bg-dark rentHidden">Rent</a>
+                                        <div name="@timeLeft" id="loading-group-@uid" class="rentLoading">
+                                            <div class="spinner-square">
+                                                <div class="square-1 square"></div>
+                                                <div class="square-2 square"></div>
+                                                <div class="square-3 square"></div>
+                                            </div>
+                                            <p class="loading-text">Currently being rent...</p>
+                                        </div>
+                                    }
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                @*NOT MOVING END*@
+            </div>
+        </div>
+    }
+</div>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+
+
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-Type="@ViewData["Type"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-Type="@ViewData["Type"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+<script>
+    var elementsShow = document.querySelectorAll('*[id^="rent-btn-Hidden-"]');
+    var elementsHide = document.querySelectorAll('*[id^="loading-group-"]');
+    var i = 0;
+    elementsHide.forEach(function (element) {
+        element.addEventListener("load", countDown(element, elementsShow[i], $(element).attr('name')));
+        i++;
+    });
+
+    function countDown(elementHide, elementShow, elmDelay) {
+        //debugger;
+        setTimeout(() => {
+            elementHide.style.display = "none";
+            elementShow.style.display = "block";
+        }, elmDelay);
+    };
+
+</script>

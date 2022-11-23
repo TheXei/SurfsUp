@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using SurfsUp.Models
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@*<PageTitle>View</PageTitle>
+
+<h1>View</h1>
+
+<h4>Rent</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">*@
+<EditForm Model="@rent" id="RentOut" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="StartRent" class="control-label">@nameof(rent.StartRent).ToString()</label>
+        <InputDate @bind-Value="rent.StartRent" class="form-control" id="StartRent" />
+        <ValidationMessage For="() => rent.StartRent" />
+    </div>
+    <div class="form-group">
+        <label for="EndRent" class="control-label">@nameof(rent.EndRent).ToString()</label>
+        <InputDate @bind-Value="rent.EndRent" class="form-control" id="EndRent" />
+        <ValidationMessage For="() => rent.EndRent" />
+    </div>
+    <p></p>
+    @*<button type="submit">Rent</button>*@
+</EditForm>
+@*</div>
+    <div class="col-md-4">
+        <FetchData SearchString="Odense" />
+    </div>
+</div>*@
+
+@*@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }*@
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+    private Models.RentDto rent = new() { StartRent = DateTime.Now, EndRent = DateTime.Now.AddDays(7) };
+    [Parameter]
+    public EventCallback SuccesfulRent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        //if (!user.Identity.IsAuthenticated)
+        //{
+        //    Navigation.NavigateTo("/");
+        //    return;
+        //}
+
+        rent.UserName = user.Identity.Name;
+        StateHasChanged();
+        base.OnInitialized();
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        rent.BoardId = BoardId;
+        string request = $"v1/rent/";
+        var response = await Http.PostAsJsonAsync(request, rent);
+        SuccesfulRent.InvokeAsync();
+        //Navigation.NavigateTo("/boardsuser");
+    }
+}
+

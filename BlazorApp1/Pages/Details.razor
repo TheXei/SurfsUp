@@ -1,0 +1,136 @@
+﻿@page "/details/{BoardId}"
+@inject HttpClient Http
+@using Newtonsoft.Json
+@using SurfsUp.Utility
+@using SurfsUp.Models
+
+@if (Board == new Board())
+{
+    <p>Loading...</p>
+}
+else {
+    <div class="row detail-row mt-5">
+        <div class="col-7">
+            <img src="@Board.ImageURL" class="img-fluid" alt="Responsive image">
+        </div>
+        <div class="col-5">
+            <h3>@Board.Name</h3>
+            <p class="item-price">@Board.Price €</p>
+
+            <h5 class="card-title">Product Specifications</h5>
+            <h6 class="card-subtitle mb-2 text-muted">@Board.Type</h6>
+            <table style="width:100%;">
+                <tr>
+                    <td><b>Length</b></td>
+                    <td style="text-align:right;">@Board.Length</td>
+                </tr>
+                <tr>
+                    <td><b>Width</b></td>
+                    <td style="text-align:right;">@Board.Width</td>
+                </tr>
+                <tr>
+                    <td><b>Thickness</b></td>
+                    <td style="text-align:right;">@Board.Thickness</td>
+                </tr>
+                <tr>
+                    <td><b>Volume</b></td>
+                    <td style="text-align:right;">@Board.Volume</td>
+                </tr>
+                <tr>
+                    <td><b>Price</b></td>
+                    <td style="text-align:right;">@Board.Price</td>
+                </tr>
+                <tr>
+                    <td style="display:flex;align-content:start;"><b>Equipment(s)</b></td>
+                    @{
+                        if (!String.IsNullOrEmpty(Board.Equipments))
+                        {
+                            <td style="text-align:right;">
+                                @foreach (var items in Board.Equipments.Split(','))
+                                {
+                                    <p style="margin:0;padding:0;">@items</p>
+                                }
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="text-align:right;">None</td>
+                        }
+                    }
+                </tr>
+            </table>
+            <ul class="details-btn-ul">
+@*                <li class="nav-item detail-btn-li" style="width: 100%;text-align:center;">
+                    <a asp-action="RentOut" asp-route-id="@Board.Id" class="nav-link text-light bg-dark">Rent</a>
+                </li>
+                <li class="nav-item detail-btn-li" style="width: 100%;text-align:center;">
+                    <a asp-action="Index" class="nav-link text-light bg-dark">Back</a>
+                </li>*@
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-5 detail-row">
+        <div class="col-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Product Specifications</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@Board.Type</h6>
+                    <p>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                    </p>
+                    <a href="#" class="card-link text-dark">Lorem Link</a>
+                    <a href="#" class="card-link text-dark">Lorem ipsum Link</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Brand</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@Board.Type</h6>
+                    <p>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                    </p>
+                    <a href="#" class="card-link text-dark">Lorem Link</a>
+                    <a href="#" class="card-link text-dark">Lorem ipsum Link</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">About</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@Board.Type</h6>
+                    <p>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                    </p>
+                    <a href="#" class="card-link text-dark">Lorem Link</a>
+                    <a href="#" class="card-link text-dark">Lorem ipsum Link</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string BoardId { get; set; }
+
+    public Board Board { get; set; } = new();
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        string request = $"v2/board/{BoardId}";
+
+        var response = await Http.GetAsync(request);
+
+        Board board = JsonConvert.DeserializeObject<Board>(response.Content.ReadAsStringAsync().Result);
+        if(board != null)
+            Board = board;  
+
+        StateHasChanged();
+        base.OnInitialized();
+    }
+}

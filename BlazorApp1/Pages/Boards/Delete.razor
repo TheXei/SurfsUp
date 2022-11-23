@@ -1,0 +1,27 @@
+﻿@page "/boards/delete/{BoardId:int}"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Newtonsoft.Json
+@using SurfsUp.Utility
+@using SurfsUp.Models
+@attribute [Authorize()]
+<h3>Are you sure you want to delete this?</h3>
+<button value="Delete" class="btn btn-danger" @onclick="HandleValidSubmit">Delete</button>
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        string request = $"v1/board/{BoardId}";
+        await Http.DeleteAsync(request);
+        Navigation.NavigateTo("/boards");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+    }
+}

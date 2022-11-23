@@ -1,4 +1,6 @@
-﻿@model IEnumerable<SurfsUp.Models.Board>
+﻿@using System.Reflection
+@using SurfsUp.Utility
+@model PaginatedList<SurfsUp.Models.Board>
 
 @{
     ViewData["Title"] = "Board Manager";
@@ -11,13 +13,26 @@
     </p>
     <form asp-controller="Boards" asp-action="Index" method="get">
         <p style="margin:0;display:flex;">
-            <input class="form-control" type="text" name="search" placeholder="Name" />
+            <select class="me-2 form-control" name="type">
+                <option value="">All Types</option>
+                @foreach (PropertyInfo propertyInfo in typeof(Board).GetProperties())
+                {
+                    var propName = propertyInfo.Name.ToLower();
+                    List<string> Hide = new List<string>() { "id", "imageurl", "rent" };
+                    if (!Hide.Any(s => propName.Contains(s)))
+                    {
+                        <option value="@propName">@propertyInfo.Name</option>
+                    }
+                }
+            </select>
+            <input class="form-control" type="text" name="search" placeholder="Search Text" />
             <input class="btnSearch btn btn-dark" type="submit" value="Search" />
         </p>
     </form>
 </div>
 
 <div class="row" style="display:flex;flex-wrap:wrap; padding:0!important;">
+
     @foreach (var item in Model)
     {
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
@@ -25,7 +40,7 @@
                 <div class="card-header">
                     <h5 class="card-title" style="margin:0!important;"><b>@item.Name</b></h5>
                 </div>
-                <img style="width: 275px; margin:20px auto 20px auto;" class="card-img-top img-fluid" src="@item.ImageURL" alt="">
+                <img style="height: 275px; margin:20px auto 20px auto;" class="card-img-top img-fluid" src="@item.ImageURL" alt="">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><b>Length:</b> <pro style="float:right;">@item.Length feet</pro></li>
                     <li class="list-group-item"><b>Width:</b> <pro style="float:right;">@item.Width inches</pro></li>
@@ -67,6 +82,25 @@
         </div>
     }
 </div>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
 @*<table class="table">
     <thead>
         <tr>

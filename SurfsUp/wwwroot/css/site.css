@@ -20,3 +20,175 @@ body {
 .btnSearch {
     margin-left: 7px;
 }
+
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.h-custom {
+    height: calc(100% - 73px);
+}
+
+animation-div {
+    
+}
+
+.animation-div img {
+    margin-top: 15px;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 250px;
+    transition: width 250ms, height 250ms;
+}
+
+.animation-div:hover img {
+    height: 165px;
+    width: 170px;
+}
+
+.hidden-ul {
+    margin-top: 15px;
+    list-style: none;
+    padding-left: 0;
+    /*margin-bottom: 20px;*/
+}
+
+
+.item-style {
+    margin-right:10px;
+    margin-left: 10px;
+    
+}
+
+.item-style::before {
+    content: "\276F";
+    margin-right: 10px;
+    color: green;
+}
+
+.price-ul {
+    list-style: none;
+    margin-bottom: 0px;
+    padding-left: 0;
+    padding-top: 10px;
+    /*margin-top: 10px;*/
+    border-top: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.price-li {
+    font-size: 17px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.board-btn {
+    margin-top: 8px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.item-price {
+    font-size: 35px;
+    margin-right: 10px;
+    margin-left: 0;
+}
+
+.progressTimer {
+    width: 100%;
+    height: 16px;
+    padding: 16px 8px;
+}
+
+.rentHidden {
+    display:none;
+}
+
+.spinner-square {
+    display: flex;
+    flex-direction: row;
+    width: 40px;
+    height: 40px;
+}
+
+.rentLoading {
+    display: flex;
+    justify-content:center;
+}
+
+.loading-text {
+    margin: auto 0 auto 10px;
+    font-size: 18px;
+}
+
+.spinner-square > .square {
+    width: 8px;
+    height: 25px;
+    margin: auto auto;
+    border-radius: 4px;
+}
+
+.square-1 {
+    animation: square-anim 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) 0s infinite;
+}
+
+.square-2 {
+    animation: square-anim 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) 200ms infinite;
+}
+
+.square-3 {
+    animation: square-anim 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) 400ms infinite;
+}
+
+@keyframes square-anim {
+    0% {
+        height: 25px;
+        background-color: rgb(111, 163, 240);
+    }
+
+    20% {
+        height: 25px;
+    }
+
+    40% {
+        height: 35px;
+        background-color: rgb(111, 200, 240);
+    }
+
+    80% {
+        height: 25px;
+    }
+
+    100% {
+        height: 25px;
+        background-color: rgb(111, 163, 240);
+    }
+}
+
+.details-btn-ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 20px;
+}
+.detail-btn-li {
+    margin-top: 10px;
+    
+}
+
+.detail-row {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+@media (max-width: 450px) {
+    .h-custom {
+        height: 100%;
+    }
+}

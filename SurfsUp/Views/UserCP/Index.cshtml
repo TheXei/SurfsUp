@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Models.RentDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Your Rents</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Board.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Board.Length)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Board.Width)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Board.Thickness)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Board.Volume)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Board.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Board.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Board.Equipments)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.StartRent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndRent)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+               @* <td>
+                    @Html.DisplayFor(modelItem => item.Board.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Board.Length)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Board.Width)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Board.Thickness)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Board.Volume)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Board.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Board.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Board.Equipments)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartRent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndRent)
+                </td>
+               @* <td>
+                    <a asp-action="" asp-route-id="@item.Board.Id">Cancel</a> |
+                    <a asp-action="Details" asp-route-id="@item.Board.Id">Details</a>
+                </td>*@
+            </tr>
+        }
+    </tbody>
+</table>

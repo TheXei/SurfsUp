@@ -15,7 +15,8 @@
 
 # Mono auto generated files
 mono_crash.*
-
+SurfsUp/.vscode
+SurfsUp/wwwroot/images/boards/*
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

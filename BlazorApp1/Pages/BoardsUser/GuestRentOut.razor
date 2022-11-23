@@ -1,0 +1,75 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using SurfsUp.Models
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+<EditForm Model="@rent" id="RentOut" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="StartRent" class="control-label">@nameof(rent.StartRent).ToString()</label>
+        <InputDate @bind-Value="rent.StartRent" class="form-control" id="StartRent" />
+        <ValidationMessage For="() => rent.StartRent" />
+    </div>
+
+    <div class="form-group">
+        <label for="EndRent" class="control-label">@nameof(rent.EndRent).ToString()</label>
+        <InputDate @bind-Value="rent.EndRent" class="form-control" id="EndRent" />
+        <ValidationMessage For="() => rent.EndRent" />
+    </div>
+
+    <div class="form-group">
+        <label for="FirstName" class="control-label">@nameof(rent.FirstName).ToString()</label>
+        <InputText @bind-Value="rent.FirstName" class="form-control" id="FirstName" />
+        <ValidationMessage For="() => rent.FirstName" />
+    </div>
+
+    <div class="form-group">
+
+        <label for="LastName" class="control-label">@nameof(rent.LastName).ToString()</label>
+        <InputText @bind-Value="rent.LastName" class="form-control" id="LastName" />
+        <ValidationMessage For="() => rent.LastName" />
+    </div>
+
+    <div class="form-group">
+        <label for="PhoneNumber" class="control-label">@nameof(rent.PhoneNumber).ToString()</label>
+        <InputText @bind-Value="rent.PhoneNumber" class="form-control" id="PhoneNumber" />
+        <ValidationMessage For="() => rent.PhoneNumber" class="btn btn-primary"  />
+    </div>
+    <p></p>
+
+    @*            <button type="submit">Rent</button>*@
+</EditForm>
+@*@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }*@
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+    [Parameter]
+    public EventCallback SuccesfulRent { get; set; }
+    private Models.DTOs.GuestRentDto rent = new();
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        rent.StartRent = DateTime.Now;
+        rent.EndRent = rent.StartRent.AddDays(7);
+        StateHasChanged();
+        base.OnInitialized();
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        rent.BoardId = BoardId;
+        string request = $"v2/rent/";
+        await Http.PostAsJsonAsync(request, rent);
+        SuccesfulRent.InvokeAsync();
+        //Navigation.NavigateTo("/boardsuser");
+    }
+}
