@@ -21,9 +21,6 @@
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()"/>
             </div>
             <div class="modal-body">
-
-                @*                @foreach (var item in Boards)
-                { *@
                 <div class="col-xl-12 col-lg-4 col-md-12 col-sm-12">
                     <div class="card" style="margin-top:15px;">
                         <img style="height: 275px; margin:20px auto 20px auto;" class="card-img-top img-fluid" src="@Board.ImageURL" alt="">
@@ -67,7 +64,6 @@
                         </div>
                     </div>
                 </div>
-                @* } *@
             </div>
             <div class="modal-footer">
                 <button type="submit" form="RentOut" class="btn btn-primary">Rent Board</button>
@@ -90,7 +86,6 @@
     private RentOut rentOut = new();
     private String formName = String.Empty;
     bool IsAuthenticated => AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated;
-    private Models.DTOs.GuestRentDto Rent { get; set; } = new();
     [Parameter]
     public EventCallback OnClose { get; set; }
 
