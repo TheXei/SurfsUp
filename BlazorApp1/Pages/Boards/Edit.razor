@@ -101,7 +101,7 @@
     private async Task HandleValidSubmit()
     {
         string request = $"v1/board/{BoardId}";
-        await Http.PostAsJsonAsync(request, board);
+        await Http.PutAsJsonAsync(request, board);
         Navigation.NavigateTo("/boards");
     }
 }

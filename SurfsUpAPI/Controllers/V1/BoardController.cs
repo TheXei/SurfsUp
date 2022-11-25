@@ -21,8 +21,19 @@ namespace SurfsUpAPI.Controllers.V1
             _identityContext = identityContext;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Board>> GetBoard(int id)
+        {
+            var board = await _context.Board.FindAsync(id);
+
+            if (board == null)
+                return NotFound();
+
+            return board;
+        }
+
         [HttpPost("")]
-        public async Task<ActionResult<RentDto>> Create([Bind("Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board)
+        public async Task<ActionResult<Board>> Create([Bind("Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board)
         {
             if (ModelState.IsValid)
             {
@@ -33,8 +44,8 @@ namespace SurfsUpAPI.Controllers.V1
             return BadRequest();
         }
 
-        [HttpPost("{id}")]
-        public async Task<ActionResult<RentDto>> Edit(int id, [Bind("Id, Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Board>> Edit(int id, [Bind("Id, Name,Length,Width,Thickness,Volume,Type,Price,Equipments,ImageURL")] Board board)
         {
             if (id != board.Id || !BoardExists(id))
                 return BadRequest();

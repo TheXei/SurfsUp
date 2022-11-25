@@ -7,7 +7,7 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @*A way to restrict access to the controller to only users with the role of Admin.*@
-@attribute [Authorize(Roles = StaticDetails.Role_User_Admin)]
+@attribute [Authorize]
 
 
 <h1>Board Manager</h1>
@@ -128,11 +128,17 @@
         //{
         //    PageNumber = 1;
         //}
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var request = $"v1/userboards/{user.Identity.Name}?search={CurrentFilter}&type={Type}&withRent={true}";
 
-        string request = $"v1/boards/?search={CurrentFilter}&type={Type}&withRent={true}";
-
-        var response = await Http.GetAsync(request);
-
+        if (user.IsInRole(StaticDetails.Role_User_Admin))
+        {
+            request = $"v1/boards/?search={CurrentFilter}&type={Type}&withRent={true}";
+        }
+            
+            var response = await Http.GetAsync(request);
+        
         if (response.StatusCode != System.Net.HttpStatusCode.OK)
             return;
 
