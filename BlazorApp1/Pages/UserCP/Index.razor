@@ -31,8 +31,12 @@
                     <p>@item.StartRent</p>
                 </td>
                 <td>
+                    <div class="flex">
+                        <p>
+                            @item.EndRent <button @onclick="Chat" class="btn btn-dark">Chat</button>
+                        </p>
+                    </div>
                     @*@Html.DisplayFor(modelItem => item.EndRent)*@
-                    <p>@item.EndRent</p>
                 </td>
             </tr>
         }
@@ -64,5 +68,10 @@
 
         StateHasChanged();
         base.OnInitialized();
+    }
+
+    private void Chat()
+    {
+        Navigation.NavigateTo($"support");
     }
 }

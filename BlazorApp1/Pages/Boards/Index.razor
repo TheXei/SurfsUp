@@ -81,6 +81,9 @@
                         <li class="nav-item">
                             <button @onclick="() => Delete(item.Id)" class="nav-link text-light bg-dark">Delete</button>
                         </li>
+                        <li class="nav-item">
+                            <button @onclick="() => Chat()" class="nav-link text-light bg-dark">Chat</button>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -167,5 +170,10 @@
     public void Delete(int selectedBoard)
     {
         Navigation.NavigateTo($"boards/delete/{selectedBoard}");
+    }
+
+    public void Chat()
+    {
+        Navigation.NavigateTo($"support");
     }
 }

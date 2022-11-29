@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
 using SurfsUp.Utility;
+using Microsoft.AspNetCore.ResponseCompression;
+using BlazorApp1.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,8 +49,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7277/api/") });
 builder.Services.AddBlazoredSessionStorage();
+
 
 var app = builder.Build();
 
@@ -59,6 +67,8 @@ using (var scope = app.Services.CreateScope())
     SeedData.Initialize(services);
     await SeedData.InitializeUser(services);
 }
+
+app.UseResponseCompression();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -84,6 +94,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapBlazorHub();
+app.MapHub<ChatHub>("/chathub");
 app.MapFallbackToPage("/_Host");
 
 app.Run();
