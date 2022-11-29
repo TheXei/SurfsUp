@@ -1,4 +1,6 @@
-﻿@page "/"
+﻿@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@page "/{clear:bool?}"
+
 
 <PageTitle>Index</PageTitle>
 
@@ -8,3 +10,16 @@
     <h1 class="display-4">Welcome to Surf's Up</h1>
     <p style="font-size:20px;">🤙🤙🤙🤙🤙🤙🤙🤙</p>
 </div>
+
+@code {
+    [Parameter]
+    public bool clear { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (clear)
+            await sessionStorage.ClearAsync();
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}
