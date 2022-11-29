@@ -47,7 +47,7 @@ namespace SurfsUp.Areas.Identity.Pages.Account
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
-            _signInManager = signInManager;
+            _signInManager = signInManager; 
             _logger = logger;
             _emailSender = emailSender;
         }
