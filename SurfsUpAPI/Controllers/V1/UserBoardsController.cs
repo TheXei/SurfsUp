@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using SurfsUp.Data;
 using SurfsUp.Models;
 
@@ -37,10 +38,6 @@ namespace SurfsUpAPI.Controllers.V1
             {
                 await _context.SaveChangesAsync();
             }
-            //if (withRent != true)
-            //{
-            //    boards = boards.Where(board => board.Rent == null);
-            //}
 
             if (!String.IsNullOrEmpty(search))
                 boards = from b in boards where b.Name.ToLower()!.Contains(search.ToLower()) select b;

@@ -5,55 +5,54 @@
 @using Newtonsoft.Json
 @using SurfsUp.Utility
 @using SurfsUp.Models
-@*A way to restrict access to the controller to only users with the role of Admin.*@
-@attribute [Authorize(Roles = StaticDetails.Role_User_Admin)]
+@attribute [Authorize]
 
 <EditForm Model="@board" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
         <label for="Name" class="control-label">@nameof(board.Name).ToString()</label>
-        <InputText @bind-Value="board.Name" class="form-control" id="Name"/>
+        <InputText @bind-Value="board.Name" class="form-control" id="Name" />
         <ValidationMessage For="() => board.Name" />
     </div>
     <div class="form-group">
         <label for="Price" class="control-label">@nameof(board.Price).ToString()</label>
-        <InputNumber @bind-Value="board.Price" class="form-control" id="Price"/>
+        <InputNumber @bind-Value="board.Price" class="form-control" id="Price" />
         <ValidationMessage For="() => board.Price" />
     </div>
     <div class="form-group">
         <label for="Equipments" class="control-label">@nameof(board.Equipments).ToString()</label>
-        <InputText @bind-Value="board.Equipments" class="form-control" id="Equipments"/>
+        <InputText @bind-Value="board.Equipments" class="form-control" id="Equipments" />
         <ValidationMessage For="() => board.Equipments" />
     </div>
 
     <div class="form-group">
         <label for="Thickness" class="control-label">@nameof(board.Thickness).ToString()</label>
-        <InputNumber @bind-Value="board.Thickness" class="form-control" id="Thickness"/>
+        <InputNumber @bind-Value="board.Thickness" class="form-control" id="Thickness" />
         <ValidationMessage For="() => board.Thickness" />
     </div>
 
     <div class="form-group">
         <label for="Length" class="control-label">@nameof(board.Length).ToString()</label>
-        <InputNumber @bind-Value="board.Length" class="form-control" id="Length"/>
+        <InputNumber @bind-Value="board.Length" class="form-control" id="Length" />
         <ValidationMessage For="() => board.Length" />
     </div>
 
     <div class="form-group">
         <label for="Name" class="control-label">@nameof(board.ImageURL).ToString()</label>
-        <InputText @bind-Value="board.ImageURL" class="form-control" id="ImageURL"/>
+        <InputText @bind-Value="board.ImageURL" class="form-control" id="ImageURL" />
         <ValidationMessage For="() => board.ImageURL" />
     </div>
 
     <div class="form-group">
         <label for="Width" class="control-label">@nameof(board.Width).ToString()</label>
-        <InputNumber @bind-Value="board.Width" class="form-control" id="Width"/>
+        <InputNumber @bind-Value="board.Width" class="form-control" id="Width" />
         <ValidationMessage For="() => board.Width" />
     </div>
 
     <div class="form-group">
         <label for="Volume" class="control-label">@nameof(board.Volume).ToString()</label>
-        <InputNumber @bind-Value="board.Volume" class="form-control" id="Volume"/>
+        <InputNumber @bind-Value="board.Volume" class="form-control" id="Volume" />
         <ValidationMessage For="() => board.Volume" />
     </div>
 
@@ -100,7 +99,12 @@
 
     private async Task HandleValidSubmit()
     {
-        string request = $"v1/board/{BoardId}";
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var request = $"v1/userboard/{BoardId}?UserName={user.Identity.Name}";
+
+        if (user.IsInRole(StaticDetails.Role_User_Admin))
+            request = $"v1/board/{BoardId}";
         await Http.PutAsJsonAsync(request, board);
         Navigation.NavigateTo("/boards");
     }

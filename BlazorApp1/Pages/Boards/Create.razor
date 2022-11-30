@@ -6,7 +6,6 @@
 @using Newtonsoft.Json
 @using SurfsUp.Utility
 @using SurfsUp.Models
-@*A way to restrict access to the controller to only users with the role of Admin.*@
 @attribute [Authorize]
 
 <EditForm Model="@board" OnValidSubmit="@HandleValidSubmit">
@@ -105,7 +104,12 @@
 
     private async Task HandleValidSubmit()
     {
-        string request = $"v1/board/";
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var request = $"v1/userboard/{user.Identity.Name}";
+
+        if (user.IsInRole(StaticDetails.Role_User_Admin))
+            request = $"v1/board/";
         await Http.PostAsJsonAsync(request, board);
         Navigation.NavigateTo("/boards");
     }
@@ -113,6 +117,5 @@
     private async Task UpdateSession()
     {
         await sessionStorage.SetItemAsync("board", board);
-        Console.WriteLine($"UPDATED {board.Name}");
     }
 }

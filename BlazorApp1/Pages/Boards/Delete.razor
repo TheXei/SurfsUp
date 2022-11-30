@@ -5,8 +5,7 @@
 @using Newtonsoft.Json
 @using SurfsUp.Utility
 @using SurfsUp.Models
-@*A way to restrict access to the controller to only users with the role of Admin.*@
-@attribute [Authorize(Roles = StaticDetails.Role_User_Admin)]
+@attribute [Authorize]
 <h3>Are you sure you want to delete this?</h3>
 <button value="Delete" class="btn btn-danger" @onclick="HandleValidSubmit">Delete</button>
 
@@ -16,7 +15,12 @@
 
     private async Task HandleValidSubmit()
     {
-        string request = $"v1/board/{BoardId}";
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var request = $"v1/userboard/{BoardId}?UserName={user.Identity.Name}";
+
+        if (user.IsInRole(StaticDetails.Role_User_Admin))
+            request = $"v1/board/{BoardId}";
         await Http.DeleteAsync(request);
         Navigation.NavigateTo("/boards");
     }
